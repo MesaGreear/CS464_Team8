@@ -1,0 +1,8 @@
+.options {
+    display: flex;
+    flex-basis: 33%;
+}
+
+.options_text{
+    margin: 0px;
+}

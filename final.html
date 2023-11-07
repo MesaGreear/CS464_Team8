@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Hello WebGL</title>
+	<meta name="generator" content="BBEdit 10.5" />
+
+<!-- load matrix manipulation helper methods -->	
+<script type="text/javascript" src="glMatrix_util.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="geometry.js"></script>
+<script type="text/javascript" src="user.js"></script>
+<script type="text/javascript" src="misc.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- define our shaders -->
+<script id="shader-fs" type="x-shader/x-fragment">
+    // =================================================================================
+    //                              FRAGMENT SHADER
+    // =================================================================================
+
+    precision mediump float;
+
+    varying vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    // =================================================================================
+    //                              VERTEX SHADER
+    // =================================================================================
+
+    attribute vec3 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+    }
+</script>
+
+</head>
+
+
+
+
+
+
+
+
+<!-- declare the "body" of the HTML document-->
+<!-- the onload attribute specifies a javascript function to execute when the body tag is loaded into the browser -->
+
+<body onload="startHelloWebGL()">
+<h1>Team 8</h1>
+<h2>Screensaver</h2>
+
+<!-- embed the HTML5 Canvas Drawing object on the page.-->
+<!-- Name the canvas 'hellowebgl' for the javascript code. -->
+<div style="display: flex; gap: 30px">
+    <div>
+        <div style="display: flex; gap: 100px">
+            <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace;" id="deets"></p>
+            <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace; position: absolute; margin-left: 200px;" id="deets2"></p>
+        </div>
+        <canvas id="hellowebgl" width=640 height=480>
+        If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
+        </canvas>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+        <!-- // ================================================================================= -->
+        <!-- //                           USER CONTROL STUFF                                      -->
+        <!-- // ================================================================================= -->
+        <div style="display: flex; gap: 10px">
+
+            <div style="padding: 3px; border-style: solid;">
+                <h4>Ambient RGB</h4>
+                <div id="ambientROutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="0" max="100" value="80" class="slider" id="ambientR">
+                </div>
+
+                <div id="ambientGOutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="0" max="100" value="80" class="slider" id="ambientG">
+                </div>
+
+                <div id="ambientBOutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="0" max="100" value="80" class="slider" id="ambientB">
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 0px; flex-direction: column;">
+            <div>
+                <h4 style="margin-bottom: 5px;">Texture to use:</h4>
+                <div class="textcontainer">
+                    <input type="text" value="texture.png" class="text" id="texture" onchange="initTextures()">
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; width: 640px; gap: 30px">
+    <div>
+        <h4 style="margin-bottom: 5px;">Speed</h4>
+        <div id="speedOutput"></div>
+        <div class="slidecontainer">
+            <input type="range" min="10" max="300" value="100" step="5" class="slider" id="speed">
+        </div>
+    </div>
+    <div>
+        <h4 style="margin-bottom: 5px;">Length</h4>
+        <div id="lengthOutput"></div>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="50" value="25" class="slider" id="length">
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -111,6 +111,58 @@ function initSquare(coord) {
     );
 }
 
+var SPHERE_QUALITY = 20; // quality of the sphere/smoothness
+
+/**
+ * Generate a sphere centered around the given coordinates and push its geometry
+ * data to vertices, textureCoords, & vertexIndices.
+ * 
+ * @param coord vec3 representing a 3D coordinate
+ */
+function initSphere(coord) {
+    // Lotsa help from here (https://stackoverflow.com/questions/47756053/webgl-try-draw-sphere)
+    var i, ai, si, ci;
+    var j, aj, sj, cj;
+    var p1, p2;
+
+    // vertices
+    for(j = 0; j <= SPHERE_QUALITY; j++) {
+        aj = j * Math.PI / SPHERE_QUALITY;
+        sj = Math.sin(aj);
+        cj = Math.cos(aj);
+        for(i = 0; i <= SPHERE_QUALITY; i++) {
+            ai = i * 2 * Math.PI / SPHERE_QUALITY;
+            si = Math.sin(ai);
+            ci = Math.cos(ai);
+
+            vertices.push(si * sj + coord[0]); // X
+            vertices.push(cj + coord[1]);      // Y
+            vertices.push(ci * sj + coord[2]); // Z
+
+            textureCoords.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
+        }
+    }
+
+    //TODO: normals?
+
+    // indices
+    var offset = (vertices.length/3) - ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
+    for (j = 0; j < SPHERE_QUALITY; j++) {
+        for (i = 0; i < SPHERE_QUALITY; i++) {
+          p1 = offset + (j * (SPHERE_QUALITY+1) + i);
+          p2 = (p1 + (SPHERE_QUALITY+1));
+
+          vertexIndices.push(p1);
+          vertexIndices.push(p2);
+          vertexIndices.push(p1 + 1);
+
+          vertexIndices.push(p1 + 1);
+          vertexIndices.push(p2);
+          vertexIndices.push(p2 + 1);
+        }
+      }
+}
+
 /**
  * Given a 3D position, randomly calculate another nearby coordinate within certain bounds.
  * 
@@ -156,11 +208,13 @@ function initGeometry()
     for(i = 0; i < q.length; i++) 
         initSquare(q[i]);
 
+    initSphere([0, 0, 4]);
+
     terVertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, terVertexPositionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     terVertexPositionBuffer.itemSize = 3;
-    terVertexPositionBuffer.numItems = 24 * q.length;
+    terVertexPositionBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
 
     // terNormalBuffer = gl.createBuffer();
     // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
@@ -183,11 +237,11 @@ function initGeometry()
     gl.bindBuffer(gl.ARRAY_BUFFER, terVertexTextureCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
     terVertexTextureCoordBuffer.itemSize = 2;
-    terVertexTextureCoordBuffer.numItems = 24 * q.length;
+    terVertexTextureCoordBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
 
     terVertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terVertexIndexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
     terVertexIndexBuffer.itemSize = 1;
-    terVertexIndexBuffer.numItems = 36 * q.length;
+    terVertexIndexBuffer.numItems = (36 * q.length) + (((SPHERE_QUALITY) * (SPHERE_QUALITY)) * 6);
 }

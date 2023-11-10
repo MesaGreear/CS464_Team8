@@ -163,6 +163,73 @@ function initSphere(coord) {
       }
 }
 
+var CYLINDER_QUALITY = 20;
+var HEIGHT = 2;
+var RADIUS = 1;
+
+/**
+ * Generate a cylinder centered around the given coordinates and push its geometry
+ * data to vertices, textureCoords, & vertexIndices.
+ * 
+ * @param coord vec3 representing a 3D coordinate
+ * @param dir   direction for cylinder to be facing. 0 --> x-axis, 1 --> y-axis,
+ *              2/def --> z-axis
+ */
+function initCylinder(coord, dir) {
+    // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
+
+    var sectorStep = 2 * Math.PI/CYLINDER_QUALITY;
+    var unitVertices = [];
+
+    for(i = 0; i <= CYLINDER_QUALITY; i++) {
+        var sectorAngle = i * sectorStep;
+        unitVertices.push(Math.cos(sectorAngle));
+        unitVertices.push(Math.sin(sectorAngle));
+        unitVertices.push(0);
+    }
+
+    // vertices & textureCoords
+    for(i = 0; i < 2; i++) {
+        var h = -HEIGHT/2.0 + i * HEIGHT;
+        var t = 1.0 - i;
+
+        // center point
+        // vertices.push(0, 0, h);
+        // textureCoords.push(0.5, 0.5);
+
+        for(j = 0, k = 0; j <= CYLINDER_QUALITY; j++, k+=3) {
+            var ux = unitVertices[k];
+            var uy = unitVertices[k+1];
+            var uz = unitVertices[k+2];
+
+            var cx = ux * RADIUS;
+            var cy = uy * RADIUS;
+            var cz = h;
+
+            // based on direction being faced, push vertex coordinates differently
+            if(dir == 0) // x-axis
+                vertices.push(coord[0] + cz, coord[1] + cx, coord[2] + cy);
+            else if(dir == 1) // y-axis
+                vertices.push(coord[0] + cy, coord[1] + cz, coord[2] + cx);
+            else // z-axis
+                vertices.push(coord[0] + cx, coord[1] + cy, coord[2] + cz);
+
+            textureCoords.push((j * 1.0)/CYLINDER_QUALITY, t);
+        }
+    }
+
+    // indices
+    var k1 = 0;
+    var k2 = CYLINDER_QUALITY + 1;
+    var offset = (vertices.length/3) - (2 * (CYLINDER_QUALITY + 1));
+    for(i = 0; i < CYLINDER_QUALITY; i++, k1++, k2++) {
+        vertexIndices.push(offset + k1, offset + k1 + 1, offset + k2);
+        vertexIndices.push(offset + k2, offset + k1 + 1, offset + k2 + 1);
+    }
+
+
+}
+
 /**
  * Given a 3D position, randomly calculate another nearby coordinate within certain bounds.
  * 
@@ -210,11 +277,15 @@ function initGeometry()
 
     initSphere([0, 0, 4]);
 
+    initCylinder([4, 0, 0], 0);
+
+    initSphere([0, 0, -4]);
+
     terVertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, terVertexPositionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     terVertexPositionBuffer.itemSize = 3;
-    terVertexPositionBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
+    terVertexPositionBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1))*2 + (2 * (CYLINDER_QUALITY + 1));
 
     // terNormalBuffer = gl.createBuffer();
     // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
@@ -237,11 +308,11 @@ function initGeometry()
     gl.bindBuffer(gl.ARRAY_BUFFER, terVertexTextureCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
     terVertexTextureCoordBuffer.itemSize = 2;
-    terVertexTextureCoordBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
+    terVertexTextureCoordBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1))*2 + (2 * (CYLINDER_QUALITY + 1));
 
     terVertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terVertexIndexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
     terVertexIndexBuffer.itemSize = 1;
-    terVertexIndexBuffer.numItems = (36 * q.length) + (((SPHERE_QUALITY) * (SPHERE_QUALITY)) * 6);
+    terVertexIndexBuffer.numItems = (36 * q.length) + (((SPHERE_QUALITY) * (SPHERE_QUALITY)) * 6)*2 + (CYLINDER_QUALITY * 6);
 }

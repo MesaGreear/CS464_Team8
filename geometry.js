@@ -1,21 +1,16 @@
-// create and initialize our geometry objects
-var terVertexPositionBuffer;
-var terNormalBuffer;
-var terVertexTextureCoordBuffer;
-var terVertexIndexBuffer;
+var vBuffers = [];
+var tBuffers = [];
+var iBuffers = [];
 
-var vertices;
-var textureCoords;
-var vertexIndices;
+var vertices = [];
+var textures = [];
+var indices = [];
 
-/** Coordinates of the 'snake' are kept in a queue. The head is always q[q.length-1] 
- * and the tail is always q[0]. New coordinates are added to the head and old coordinates
- * are expelled from the tail.*/
-var q = [[30, -30, -30]]; //starting coordinates
+// TODO: remove coord parameters from init functions?
 
 /**
  * Generate a square centered around the given coordinates and push its geometry
- * data to vertices, textureCoords, & vertexIndices.
+ * data to vertices, textures, & indices.
  * 
  * @param coord vec3 representing a 3D coordinate
  */
@@ -61,7 +56,7 @@ function initSquare(coord) {
 
     // TODO: normals?
 
-    textureCoords.push(
+    textures.push(
         // Front face
         0.0, 0.0,
         1.0, 0.0,
@@ -101,7 +96,7 @@ function initSquare(coord) {
 
       var offset = (vertices.length/3) - 24;
 
-      vertexIndices.push(
+      indices.push(
         offset + 0, offset + 1, offset + 2,      offset + 0, offset + 2, offset + 3,    // Front face
         offset + 4, offset + 5, offset + 6,      offset + 4, offset + 6, offset + 7,    // Back face
         offset + 8, offset + 9, offset + 10,     offset + 8, offset + 10, offset + 11,  // Top face
@@ -112,10 +107,13 @@ function initSquare(coord) {
 }
 
 var SPHERE_QUALITY = 20; // quality of the sphere/smoothness
+var SPHERE_VERTICES = (SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1);
+var SPHERE_INDICES = SPHERE_QUALITY * SPHERE_QUALITY * 6;
+
 
 /**
  * Generate a sphere centered around the given coordinates and push its geometry
- * data to vertices, textureCoords, & vertexIndices.
+ * data to vertices, textures, & indices.
  * 
  * @param coord vec3 representing a 3D coordinate
  */
@@ -139,37 +137,35 @@ function initSphere(coord) {
             vertices.push(cj + coord[1]);      // Y
             vertices.push(ci * sj + coord[2]); // Z
 
-            textureCoords.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
+            textures.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
         }
     }
 
     //TODO: normals?
 
     // indices
-    var offset = (vertices.length/3) - ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1));
+    var offset = (vertices.length/3) - SPHERE_VERTICES;
     for (j = 0; j < SPHERE_QUALITY; j++) {
         for (i = 0; i < SPHERE_QUALITY; i++) {
           p1 = offset + (j * (SPHERE_QUALITY+1) + i);
           p2 = (p1 + (SPHERE_QUALITY+1));
 
-          vertexIndices.push(p1);
-          vertexIndices.push(p2);
-          vertexIndices.push(p1 + 1);
-
-          vertexIndices.push(p1 + 1);
-          vertexIndices.push(p2);
-          vertexIndices.push(p2 + 1);
+          indices.push(p1, p2, p1 + 1);
+          indices.push(p1 + 1, p2, p2 + 1);
         }
       }
 }
 
 var CYLINDER_QUALITY = 20;
+var CYLINDER_VERTICES = 2 * (CYLINDER_QUALITY + 1);
+var CYLINDER_INDICES = 6 * CYLINDER_QUALITY;
+
 var HEIGHT = 2;
 var RADIUS = 1;
 
 /**
  * Generate a cylinder centered around the given coordinates and push its geometry
- * data to vertices, textureCoords, & vertexIndices.
+ * data to vertices, textures, & indices.
  * 
  * @param coord vec3 representing a 3D coordinate
  * @param dir   direction for cylinder to be facing. 0 --> x-axis, 1 --> y-axis,
@@ -188,7 +184,7 @@ function initCylinder(coord, dir) {
         unitVertices.push(0);
     }
 
-    // vertices & textureCoords
+    // vertices & textures
     for(i = 0; i < 2; i++) {
         var h = -HEIGHT/2.0 + i * HEIGHT;
         var t = 1.0 - i;
@@ -214,105 +210,72 @@ function initCylinder(coord, dir) {
             else // z-axis
                 vertices.push(coord[0] + cx, coord[1] + cy, coord[2] + cz);
 
-            textureCoords.push((j * 1.0)/CYLINDER_QUALITY, t);
+            textures.push((j * 1.0)/CYLINDER_QUALITY, t);
         }
     }
 
     // indices
     var k1 = 0;
     var k2 = CYLINDER_QUALITY + 1;
-    var offset = (vertices.length/3) - (2 * (CYLINDER_QUALITY + 1));
+    var offset = (vertices.length/3) - CYLINDER_VERTICES;
     for(i = 0; i < CYLINDER_QUALITY; i++, k1++, k2++) {
-        vertexIndices.push(offset + k1, offset + k1 + 1, offset + k2);
-        vertexIndices.push(offset + k2, offset + k1 + 1, offset + k2 + 1);
+        indices.push(offset + k1, offset + k1 + 1, offset + k2);
+        indices.push(offset + k2, offset + k1 + 1, offset + k2 + 1);
     }
 
 
 }
 
+
 /**
- * Given a 3D position, randomly calculate another nearby coordinate within certain bounds.
+ * Initialize the buffers using the geometry data currently in the vertices, textures,
+ * and indices arrays and then insert those buffers into their respective buffers array
+ * at the given index.
  * 
- * @param pos vec3 representing coordinates in a 3D space
- * 
- * @returns pos with either an altered x, y, or z value
+ * @param {int} index What index the buffers will be located at in their respective arrays
  */
-function nextPos(pos) {
+function initBuffers(index) {
+    vBuffers[index] = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    vBuffers[index].itemSize = 3;
+    vBuffers[index].numItems = vertices.length/3;
 
-    var r = Math.floor(Math.random() * 3);
-    var newPos = [pos[0], pos[1], pos[2]];
+    tBuffers[index] = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textures), gl.STATIC_DRAW);
+    tBuffers[index].itemSize = 2;
+    tBuffers[index].numItems = textures.length/2;
 
-    newPos[r] += Math.random() < 0.5 ? -3 : 3; // 3 is the current offset value
-
-    // check bounds, don't let the 'snake' fly off into the aether
-    newPos[0] = Math.min(newPos[0], 90);
-    newPos[0] = Math.max(newPos[0], 0);
-
-    newPos[1] = Math.min(newPos[1], 0);
-    newPos[1] = Math.max(newPos[1], -50);
-
-    newPos[2] = Math.min(newPos[2], 0);
-    newPos[2] = Math.max(newPos[2], -90);
-
-    return newPos;
+    iBuffers[index] = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    iBuffers[index].itemSize = 1;
+    iBuffers[index].numItems = indices.length;
 }
 
+/**
+ * Empty the vertices, textures, and indices arrays in preparation of new geometry data */
+function clearArrs() { vertices.length = 0; textures.length = 0; indices.length = 0; }
+
+/**
+ * Initialize the scene's geometry data and buffers.
+ */
 function initGeometry()
 {
-    // reset geometry data
-    vertices = [];
-    textureCoords = [];
-    vertexIndices = [];
+    // initialize a square and insert it's details into the buffers at index 0
+    initSquare([0, 0, 0]);
+    initBuffers(0);
 
-    // push the next random position into q
-    q.push( nextPos(q[q.length-1]) );
+    clearArrs();
 
-    // keep q's length below a certain value
-    while(q.length > length)
-        q.shift();
+    // initialize a sphere and insert it's details into the buffers at index 0
+    initSphere([0, 0, 0]);
+    initBuffers(1);
 
-    // generate all the squares based on the coordinates held in q
-    for(i = 0; i < q.length; i++) 
-        initSquare(q[i]);
+    clearArrs();
 
-    initSphere([0, 0, 4]);
-
-    initCylinder([4, 0, 0], 0);
-
-    initSphere([0, 0, -4]);
-
-    terVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, terVertexPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    terVertexPositionBuffer.itemSize = 3;
-    terVertexPositionBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1))*2 + (2 * (CYLINDER_QUALITY + 1));
-
-    // terNormalBuffer = gl.createBuffer();
-    // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
-    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(nvertices), gl.STATIC_DRAW);
-    // terNormalBuffer.itemSize = 3;
-    // terNormalBuffer.numItems = vertexCount*vertexCount;
-
-    
-    // var textureCoords = [];
-
-    // tc = 0;
-    // for(i = 0; i < vertexCount; i++) {
-    //     for(j = 0; j < vertexCount; j++) {
-    //         textureCoords[tc++] = (j*1.0)/vertexCount;
-    //         textureCoords[tc++] = (i*1.0)/vertexCount;
-    //     }
-    // }
-
-    terVertexTextureCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, terVertexTextureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
-    terVertexTextureCoordBuffer.itemSize = 2;
-    terVertexTextureCoordBuffer.numItems = (24 * q.length) + ((SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1))*2 + (2 * (CYLINDER_QUALITY + 1));
-
-    terVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
-    terVertexIndexBuffer.itemSize = 1;
-    terVertexIndexBuffer.numItems = (36 * q.length) + (((SPHERE_QUALITY) * (SPHERE_QUALITY)) * 6)*2 + (CYLINDER_QUALITY * 6);
+    // initialize a cylinder and insert it's details into the buffers at index 0
+    initCylinder([0, 0, 0]);
+    initBuffers(2);
 }

@@ -90,8 +90,8 @@ function initGLScene()
         shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
-        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
-        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+        // shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        // gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
         
         shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
@@ -108,31 +108,10 @@ function initGLScene()
         shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
     }
 
-
-
-// create our basic model and view matrix
-var mvMatrix = mat4.create();
-var mvMatrixStack = [];
-// create our projection matrix for projecting from 3D to 2D.
-var pMatrix = mat4.create();
-
- function mvPushMatrix() {
-        var copy = mat4.create();
-        mat4.set(mvMatrix, copy);
-        mvMatrixStack.push(copy);
-    }
-
-    function mvPopMatrix() {
-        if (mvMatrixStack.length == 0) {
-            throw "Invalid popMatrix!";
-        }
-        mvMatrix = mvMatrixStack.pop();
-    }
-
-function setMatrixUniforms()
+function setMatrixUniforms(pM, mvM)
 {
-        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pM);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvM);
 
         // lighting controls for normals
         // var normalMatrix = mat3.create();
@@ -143,7 +122,6 @@ function setMatrixUniforms()
 
 
 // Initialize our texture data and prepare it for rendering
-var Gpixels; //array of pixel data (r,g,b,a for each pixel)
 var exTexture;
 
 var arrowTexture;
@@ -201,68 +179,131 @@ function startHelloWebGL()
    // If doing an animation need to add code to rotate our geometry
 }
 
-// This function draws a basic webGL scene
-// first it clears the framebuffer.
-// then we define our View positions for our camera using WebGL matrices.
-// OpenGL has convenience methods for this such as glPerspective().
-// finally we call the gl draw methods to draw our defined geometry objects.
-var xRot = 25;
-var yRot = 45;
-var zRot = 0;
+/** Coordinates of the 'snake' are kept in a queue. The head is always q[q.length-1] 
+ * and the tail is always q[0]. New coordinates are added to the head and old coordinates
+ * are expelled from the tail.*/
+var q = [[30, -30, -30]]; //starting coordinates
 
-var zoom = -10.0;
-var xDis = 0.0;
-var yDis = 0.0;
+var stack;
 
+/**
+ * Given a 3D position, randomly calculate another nearby coordinate within certain bounds.
+ * 
+ * @param pos vec3 representing coordinates in a 3D space
+ * 
+ * @returns pos with either an altered x, y, or z value
+ */
+function nextPos(pos) {
+
+    var r = Math.floor(Math.random() * 3);
+    var newPos = [pos[0], pos[1], pos[2]];
+
+    newPos[r] += Math.random() < 0.5 ? -3 : 3; // 3 is the current offset value
+
+    // check bounds, don't let the 'snake' fly off into the aether
+    newPos[0] = Math.min(newPos[0], 90);
+    newPos[0] = Math.max(newPos[0], 0);
+
+    newPos[1] = Math.min(newPos[1], 0);
+    newPos[1] = Math.max(newPos[1], -50);
+
+    newPos[2] = Math.min(newPos[2], 0);
+    newPos[2] = Math.max(newPos[2], -90);
+
+    return newPos;
+}
+
+/**
+ * Takes two vec3 (3 element arrays), combines their values, and returns
+ * the result.
+ * 
+ * @param {vec3} a The first vec3
+ * @param {vec3} b The second vec3
+ * 
+ * @returns The resulting vec3 from a + b
+ */
+function combineVec3(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+
+/**
+ * Draw the scene. Uses draw() to draw objects to the scene and performs the
+ * operations required to draw coherent scenes.
+ */
 function drawScene() {
     
-    // update the geometry every x number of frames
-    if(totalF % Math.floor(800/speed) == 0)
-        initGeometry();
-
     updateDeets();
+
+    // Our update handler, push a new shape/coordinate to the queue every x number of frames
+    if(totalF % Math.floor(30 / (speed/100.0)) == 0)    
+        q.push(nextPos(q[q.length-1]));
+
+    // 'trim' the tail of the queue till the desired length is reached
+    while(q.length > length)
+        q.shift();
+
     
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.clearColor(0, 0, 0, 1);
 
-    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 5000.0, pMatrix);
+    stack = new mStack(); // Matrix Stack
 
-    mat4.identity(mvMatrix);
+    // rotate the scene to give us our angled view
+    stack.rotateX(25);
+    stack.rotateY(45);
 
-    mat4.translate(mvMatrix, [xDis, yDis, zoom]);
+    // for each object/coord in q, draw it
+    q.forEach( (obj) => {
+        stack.push();
+        stack.translate(obj);
+        draw(0, exTexture);
+        stack.pop();
+    });
+}
 
-    mat4.rotate(mvMatrix, xRot/180.0*3.1415, [1, 0, 0]);
-    mat4.rotate(mvMatrix, yRot/180.0*3.1415, [0, 1, 0]);
-    mat4.rotate(mvMatrix, zRot/180.0*3.1415, [0, 0, 1]);
+/**
+ * Draw the object contained at the given index in the buffers and apply the
+ * given texture to it. Uses the top of the matrix stack as it's model matrix.
+ * 
+ * @param {int} index             index in the 'buffers' arrays to draw this
+ *                                object as.
+ * @param {GL_TEXTURE_2D} texture image texture to apply to this drawn object
+ */
+function draw(index, texture) {
+    var mvMatrix = mat4.identity(mat4.create());
+    mat4.multiply(mvMatrix, stack.getMatrix(), mvMatrix);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, terVertexPositionBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, terVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    var pMatrix = mat4.create();
+    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
+
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
+
+    // numVertices += vBuffers[index].numItems;
 
     // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
     // gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, terNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, terVertexTextureCoordBuffer);
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, terVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
+    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, tBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, exTexture);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 
-    gl.uniform1i(shaderProgram.samplerUniform, 0);
+    // gl.uniform1i(shaderProgram.samplerUniform, 0);
     // gl.uniform1i(shaderProgram.useLightingUniform, true)
 
     //lighting code
-    // gl.uniform3f(
-    //     shaderProgram.ambientColorUniform,
-    //     parseFloat(document.getElementById("ambientR").value/100),
-    //     parseFloat(document.getElementById("ambientG").value/100),
-    //     parseFloat(document.getElementById("ambientB").value/100)
-    // );
+    gl.uniform3f(
+        shaderProgram.ambientColorUniform,
+        parseFloat(document.getElementById("ambientR").value/100),
+        parseFloat(document.getElementById("ambientG").value/100),
+        parseFloat(document.getElementById("ambientB").value/100)
+    );
 
-    // console.log(terVertexIndexBuffer);
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terVertexIndexBuffer);
-    setMatrixUniforms();
-    gl.drawElements(gl.TRIANGLES, terVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
+    setMatrixUniforms(pMatrix, mvMatrix);
+    gl.drawElements(gl.TRIANGLES, iBuffers[index].numItems, gl.UNSIGNED_SHORT, 0);
 }
 
 

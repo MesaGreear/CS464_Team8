@@ -122,19 +122,29 @@ function setMatrixUniforms(pM, mvM)
 
 
 // Initialize our texture data and prepare it for rendering
-var exTexture;
+var red;
+var texture;
 
 var arrowTexture;
 function initTextures()
 {
-    exTexture = gl.createTexture();
-    exTexture.image = new Image();
-    exTexture.image.onload = function() {
-      handleLoadedTexture(exTexture)
+    red = gl.createTexture();
+    red.image = new Image();
+    red.image.onload = function() {
+      handleLoadedTexture(red)
     }
 
     // get texture source from html
-    exTexture.image.src = "./textures/" + document.getElementById("texture").value;
+    red.image.src = "./textures/red.png";
+
+    texture = gl.createTexture();
+    texture.image = new Image();
+    texture.image.onload = function() {
+      handleLoadedTexture(texture)
+    }
+
+    // get texture source from html
+    texture.image.src = "./textures/texture.png";
   }
 
 function handleLoadedTexture(texture, terrain)

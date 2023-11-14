@@ -121,8 +121,8 @@ function loadUserInteraction() {
 function updateDeets() {
 
     // display the coordinates of the 'head' of the 'snake'
-    var x = q[q.length-1][0];
-    var z = q[q.length-1][1];
-    var y = q[q.length-1][2];
+    var x = queue[queue.length-1][0][0];
+    var z = queue[queue.length-1][0][1];
+    var y = queue[queue.length-1][0][2];
     document.getElementById("deets").innerHTML = `Head-X: ${x} <br> Head-Y: ${z} <br> Head-Z: ${y}`;
 }

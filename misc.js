@@ -179,37 +179,84 @@ function startHelloWebGL()
    // If doing an animation need to add code to rotate our geometry
 }
 
-/** Coordinates of the 'snake' are kept in a queue. The head is always q[q.length-1] 
- * and the tail is always q[0]. New coordinates are added to the head and old coordinates
- * are expelled from the tail.*/
-var q = [[30, -30, -30]]; //starting coordinates
+/** Information about each object being drawn are kept in this queue. At any index [i], [i][0]
+ * are the coordinates the object will be drawn at, [i][1] is the shape of the object as defined
+ * in the Buffers arrays, and [i][2] is the direction the object is being drawn on (0 = X-axis,
+ * 1 = Y-axis, 2 = Z-axis).
+ * 
+ * The head is always queue[queue.length-1] and the tail is always queue[0]. New objects are added
+ * to the head and old objects are expelled from the tail. */
+var queue = [[[30, -30, -30], 1, 0]]; //starting coordinates & sphere
+
+var segmentLength = Math.floor(Math.random() * 20) + 5;
+var dir = Math.floor(Math.random() * 6);
 
 var stack;
 
 /**
- * Given a 3D position, randomly calculate another nearby coordinate within certain bounds.
+ * Generate the next segment and push it to the q. If a segment has been fully drawn (i.e. 
+ * segmentLength == 0) then a new valid direction & segmentLength are calculated.
+ */
+function addSegment() {
+
+    // if a segment has been fully drawn...
+    if(segmentLength == 0) {
+        // calculate a new segmentLength
+        segmentLength = Math.floor(Math.random() * 20) + 5;
+
+        // push a sphere to the queue to be drawn
+        queue.push([nextPos(queue[queue.length-1][0]), 1, 0]);
+
+        // generate the 4 valid directions based on the last direction we were drawing in
+        var directions = [];
+        if(dir == 0 || dir == 1)      // X-axis
+            directions.push(2, 3, 4, 5);
+        else if(dir == 2 || dir == 3) // Y-axis
+            directions.push(0, 1, 4, 5);
+        else                          // Z-axis
+            directions.push(0, 1, 2, 3);
+
+        // randomly select a valid direction and check that when the entire segment is drawn, the
+        // resulting segment will be inbounds. If it isn't, try again till a valid direction is found
+        var inBounds = false;
+        var currPos = queue[queue.length - 1][0];
+
+        while(!inBounds) {
+            dir = directions[Math.floor(Math.random() * 4)];
+            switch(dir) {
+                case 0:
+                    inBounds = currPos[0] - segmentLength > 0;   break;
+                case 1:
+                    inBounds = currPos[0] + segmentLength < 90;  break;
+                case 2:
+                    inBounds = currPos[1] - segmentLength > -50; break;
+                case 3:
+                    inBounds = currPos[1] + segmentLength < 0;   break;
+                case 4:
+                    inBounds = currPos[2] - segmentLength > -90; break;
+                case 5:
+                    inBounds = currPos[2] + segmentLength < 0;
+            }
+        }
+    }
+    // else just push a cylinder to the queue.
+    else {
+        queue.push([nextPos(queue[queue.length-1][0]), 2, Math.floor(dir/2)]);
+    }
+}
+
+/**
+ * Given a 3D position, calculate the next position based on the current direction
+ * a segment is being drawn in. Decrements segmentLength when called.
  * 
  * @param pos vec3 representing coordinates in a 3D space
  * 
  * @returns pos with either an altered x, y, or z value
  */
 function nextPos(pos) {
-
-    var r = Math.floor(Math.random() * 3);
     var newPos = [pos[0], pos[1], pos[2]];
-
-    newPos[r] += Math.random() < 0.5 ? -3 : 3; // 3 is the current offset value
-
-    // check bounds, don't let the 'snake' fly off into the aether
-    newPos[0] = Math.min(newPos[0], 90);
-    newPos[0] = Math.max(newPos[0], 0);
-
-    newPos[1] = Math.min(newPos[1], 0);
-    newPos[1] = Math.max(newPos[1], -50);
-
-    newPos[2] = Math.min(newPos[2], 0);
-    newPos[2] = Math.max(newPos[2], -90);
-
+    newPos[Math.floor(dir/2)] += (dir % 2 == 0 ? -1 : 1);
+    segmentLength--;
     return newPos;
 }
 
@@ -234,11 +281,11 @@ function drawScene() {
 
     // Our update handler, push a new shape/coordinate to the queue every x number of frames
     if(totalF % Math.floor(30 / (speed/100.0)) == 0)    
-        q.push(nextPos(q[q.length-1]));
+        addSegment();
 
     // 'trim' the tail of the queue till the desired length is reached
-    while(q.length > length)
-        q.shift();
+    while(queue.length > length)
+        queue.shift();
 
     
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -252,10 +299,21 @@ function drawScene() {
     stack.rotateY(45);
 
     // for each object/coord in q, draw it
-    q.forEach( (obj) => {
+    queue.forEach( (obj) => {
         stack.push();
-        stack.translate(obj);
-        draw(0, exTexture);
+        stack.translate(obj[0]);
+
+        // rotate the obj based on the direction it is being drawn in
+        if(obj[2] == 0)
+            stack.rotateY(90);
+        else if(obj[2] == 1)
+            stack.rotateX(90);
+
+        // if the obj is a sphere, draw it slightly bigger
+        if(obj[1] == 1)
+            stack.scale(1.65);
+
+        draw(obj[1], exTexture);
         stack.pop();
     });
 }

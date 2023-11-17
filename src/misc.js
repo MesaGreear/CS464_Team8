@@ -243,5 +243,5 @@ function Frames() {
     requestAnimFrame(Frames);
     drawScene();
     animate();
-    updateDeets();
+    updateDetails();
 }

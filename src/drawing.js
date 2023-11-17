@@ -1,5 +1,11 @@
-var pipes = []; /** Pipe queue */
-var stack; /** Matrix Stack */
+/** Pipe queue */
+var pipes = [];
+/** Matrix Stack */
+var stack;
+
+var draws;
+var binds;
+var vertices;
 
 /**
  * Draw the scene. Uses draw() to draw objects to the scene and performs the
@@ -23,8 +29,11 @@ function drawScene() {
 
     // ========================================================================================================
 
+    // reset stats
+    draws = binds = vertices = 0;
+
     // Our update handler, push a new shape/coordinate to each pipe every x number of frames
-    if(totalF % Math.floor(30 / (speed/100.0)) == 0)
+    if(totalF % Math.floor(5.0 / (speed/100.0)) == 0)
         pipes.forEach( (pipe) => { pipe.addSegment(); });
 
     // 'trim' the tail of the pipes till the desired length is reached
@@ -70,15 +79,21 @@ var oldTexture;
  * @param {int}           pMatrix The perspective matrix
  */
 function draw(index, texture, pMatrix) {
+    draws++;
+
     var mvMatrix = mat4.identity(mat4.create());
     mat4.multiply(mvMatrix, stack.getMatrix(), mvMatrix);
 
     var shape = shapes[index];
 
+    vertices += shape.vBuffer.numItems;
+
     setMatrixUniforms(pMatrix, mvMatrix);
 
     // only 'rebind' buffers if the shape/texture being drawn is different from the previous frame
     if (oldIndex != index || texture != oldTexture) {
+        binds++;
+
         gl.bindBuffer(gl.ARRAY_BUFFER, shape.vBuffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, shape.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
@@ -101,5 +116,5 @@ function draw(index, texture, pMatrix) {
 
     oldIndex = index;
     oldTexture = texture;
-    gl.drawElements(gl.TRIANGLES, shape.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(lineMode ? gl.LINES : gl.TRIANGLES, shape.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 }

@@ -109,8 +109,8 @@ function loadUserInteraction() {
     // Speed Slider
     var slider4 = document.getElementById("speed");
     var output4 = document.getElementById("speedOutput");
-    output4.innerHTML = slider4.value + "%";
-    slider4.oninput = function() { output4.innerHTML = this.value + "%"; speed = this.value;} 
+    output4.innerHTML = slider4.value + "% (FPU = " + Math.floor(5.0 / (speed/100.0))+ ")";
+    slider4.oninput = function() { speed = this.value; output4.innerHTML = this.value + "% (FPU = " + Math.floor(5.0 / (speed/100.0))+ ")";} 
 
     // Length Slider
     var slider5 = document.getElementById("length");
@@ -135,7 +135,20 @@ function loadUserInteraction() {
     } 
 }
 
-function updateDeets() {
+/** Line Mode flag */
+var lineMode = false; 
+
+/**
+ * Function to apply to an HTML checkBox that toggles lineMode when changed.
+ * 
+ * @param {HTMLInputElement} box The checkBox HTML element
+ */
+function toggleLine(box) { lineMode = box.checked; }
+
+/**
+ * Update the details that are above the canvas. Mostly for curiosity or debug purposes.
+ */
+function updateDetails() {
 
     // display the coordinates of the 'head' of the red pipe
     var seg = pipes[0].getLastSegment();
@@ -143,4 +156,7 @@ function updateDeets() {
     var z = seg.coord[1];
     var y = seg.coord[2];
     document.getElementById("deets").innerHTML = `Head-X: ${x} <br> Head-Y: ${z} <br> Head-Z: ${y}`;
+
+    // display the number of draw calls, how many times the buffers were rebinded, and the total number of vertices in the scene
+    document.getElementById("deets2").innerHTML = `Draw() Calls: &nbsp&nbsp${draws} <br> Buffers Binded: ${binds} <br> Vertex Count: &nbsp&nbsp${vertices}`;
 }

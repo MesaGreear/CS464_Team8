@@ -118,6 +118,12 @@
                 </div>
             </div>
         </div>
+        <div class="options">
+            <div class="checkcontainer">
+                <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
+            </div>
+            <h4 class="options_text">Line Mode</h4>
+        </div>
         <br>
         <br>
     </div>
@@ -128,18 +134,18 @@
         <h4 style="margin-bottom: 5px;">Speed</h4>
         <div id="speedOutput"></div>
         <div class="slidecontainer">
-            <input type="range" min="10" max="2000" value="100" step="5" class="slider" id="speed">
+            <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
         </div>
     </div>
     <div>
-        <h4 style="margin-bottom: 5px;">Length</h4>
+        <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
         <div id="lengthOutput"></div>
         <div class="slidecontainer">
             <input type="range" min="1" max="500" value="25" class="slider" id="length">
         </div>
     </div>
     <div>
-        <h4 style="margin-bottom: 5px;">Pipes</h4>
+        <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
         <div id="pipeOutput"></div>
         <div class="slidecontainer">
             <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">

@@ -103,6 +103,17 @@ function drawScene() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    //lighting code
+    gl.uniform3f(
+        shaderProgram.ambientColorUniform,
+        parseFloat(document.getElementById("ambientR").value/100),
+        parseFloat(document.getElementById("ambientG").value/100),
+        parseFloat(document.getElementById("ambientB").value/100)
+    );
+
+    var pMatrix = mat4.create();
+    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
+
     // Our update handler, push a new shape/coordinate to the queue every x number of frames
     if(totalF % Math.floor(30 / (speed/100.0)) == 0) {   
         addSegment(queue, 0);
@@ -137,7 +148,7 @@ function drawScene() {
         if(obj[1] == 1)
             stack.scale(1.65);
 
-        draw(obj[1], red);
+        draw(obj[1], red, pMatrix);
         stack.pop();
     });
 
@@ -156,53 +167,52 @@ function drawScene() {
         if(obj[1] == 1)
             stack.scale(1.65);
 
-        draw(obj[1], texture);
+        draw(obj[1], texture, pMatrix);
         stack.pop();
     });
 }
+
+var oldIndex;
+var oldTexture;
 
 /**
  * Draw the object contained at the given index in the buffers and apply the
  * given texture to it. Uses the top of the matrix stack as it's model matrix.
  * 
- * @param {int} index             index in the 'buffers' arrays to draw this
+ * @param {int}           index   index in the 'buffers' arrays to draw this
  *                                object as.
  * @param {GL_TEXTURE_2D} texture image texture to apply to this drawn object
+ * @param {int}           pMatrix The perspective matrix
  */
-function draw(index, texture) {
+function draw(index, texture, pMatrix) {
     var mvMatrix = mat4.identity(mat4.create());
     mat4.multiply(mvMatrix, stack.getMatrix(), mvMatrix);
 
-    var pMatrix = mat4.create();
-    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
-
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
-
-    // numVertices += vBuffers[index].numItems;
-
-    // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
-    // gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, terNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
-    gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, tBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
-
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    // gl.uniform1i(shaderProgram.samplerUniform, 0);
-    // gl.uniform1i(shaderProgram.useLightingUniform, true)
-
-    //lighting code
-    gl.uniform3f(
-        shaderProgram.ambientColorUniform,
-        parseFloat(document.getElementById("ambientR").value/100),
-        parseFloat(document.getElementById("ambientG").value/100),
-        parseFloat(document.getElementById("ambientB").value/100)
-    );
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
     setMatrixUniforms(pMatrix, mvMatrix);
+
+    // only 'rebind' buffers if the shape/texture being drawn is different from the previous frame
+    if (oldIndex != index || texture != oldTexture) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
+
+        // numVertices += vBuffers[index].numItems;
+
+        // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
+        // gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, terNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, tBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        // gl.uniform1i(shaderProgram.samplerUniform, 0);
+        // gl.uniform1i(shaderProgram.useLightingUniform, true)
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
+    }
+
+    oldIndex = index;
+    oldTexture = texture;
     gl.drawElements(gl.TRIANGLES, iBuffers[index].numItems, gl.UNSIGNED_SHORT, 0);
 }

@@ -118,7 +118,7 @@ class PipeSegment {
      * Constructor: Initialize a PipeSegment Object with the given values.
      * 
      * @param {vec3}      coord The coordinates of this PipeSegment in 3D space
-     * @param {int}       shape An index corelating to a shape in the buffers' arrays
+     * @param {int}       shape An index corelating to a shape in the shapes array
      * @param {1 | 2 | 3} dir   The direction of the section this PipeSegment is a part of (0 = X-axis,
      *                          1 = Y-axis, 2 = Z-axis)
      */

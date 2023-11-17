@@ -137,10 +137,10 @@ function loadUserInteraction() {
 
 function updateDeets() {
 
-    // display the coordinates of the 'head' of the red 'snake'
-    var q = pipes[0].queue;
-    var x = q[q.length - 1].coord[0];
-    var z = q[q.length - 1].coord[1];
-    var y = q[q.length - 1].coord[2];
+    // display the coordinates of the 'head' of the red pipe
+    var seg = pipes[0].getLastSegment();
+    var x = seg.coord[0];
+    var z = seg.coord[1];
+    var y = seg.coord[2];
     document.getElementById("deets").innerHTML = `Head-X: ${x} <br> Head-Y: ${z} <br> Head-Z: ${y}`;
 }

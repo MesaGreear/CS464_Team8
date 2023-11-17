@@ -65,29 +65,30 @@ var oldTexture;
  * Draw the object contained at the given index in the buffers and apply the
  * given texture to it. Uses the top of the matrix stack as it's model matrix.
  * 
- * @param {int}           index   index in the 'buffers' arrays to draw this
- *                                object as.
- * @param {GL_TEXTURE_2D} texture image texture to apply to this drawn object
+ * @param {int}           index   An index corelating to a shape in the shapes array
+ * @param {GL_TEXTURE_2D} texture Image texture to apply to this drawn object
  * @param {int}           pMatrix The perspective matrix
  */
 function draw(index, texture, pMatrix) {
     var mvMatrix = mat4.identity(mat4.create());
     mat4.multiply(mvMatrix, stack.getMatrix(), mvMatrix);
 
+    var shape = shapes[index];
+
     setMatrixUniforms(pMatrix, mvMatrix);
 
     // only 'rebind' buffers if the shape/texture being drawn is different from the previous frame
     if (oldIndex != index || texture != oldTexture) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, vBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, shape.vBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, shape.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         // numVertices += vBuffers[index].numItems;
 
         // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
         // gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, terNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
-        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, tBuffers[index].itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, shape.tBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, shape.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -95,10 +96,10 @@ function draw(index, texture, pMatrix) {
         // gl.uniform1i(shaderProgram.samplerUniform, 0);
         // gl.uniform1i(shaderProgram.useLightingUniform, true)
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shape.iBuffer);
     }
 
     oldIndex = index;
     oldTexture = texture;
-    gl.drawElements(gl.TRIANGLES, iBuffers[index].numItems, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, shape.iBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 }

@@ -1,6 +1,4 @@
-var vBuffers = [];
-var tBuffers = [];
-var iBuffers = [];
+var shapes = []; /** Contains all available shapes that can be drawn */
 
 var vertices = [];
 var textures = [];
@@ -226,34 +224,6 @@ function initCylinder(coord, dir) {
 
 }
 
-
-/**
- * Initialize the buffers using the geometry data currently in the vertices, textures,
- * and indices arrays and then insert those buffers into their respective buffers array
- * at the given index.
- * 
- * @param {int} index What index the buffers will be located at in their respective arrays
- */
-function initBuffers(index) {
-    vBuffers[index] = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vBuffers[index]);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    vBuffers[index].itemSize = 3;
-    vBuffers[index].numItems = vertices.length/3;
-
-    tBuffers[index] = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffers[index]);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textures), gl.STATIC_DRAW);
-    tBuffers[index].itemSize = 2;
-    tBuffers[index].numItems = textures.length/2;
-
-    iBuffers[index] = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffers[index]);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-    iBuffers[index].itemSize = 1;
-    iBuffers[index].numItems = indices.length;
-}
-
 /**
  * Empty the vertices, textures, and indices arrays in preparation of new geometry data */
 function clearArrs() { vertices.length = 0; textures.length = 0; indices.length = 0; }
@@ -263,19 +233,21 @@ function clearArrs() { vertices.length = 0; textures.length = 0; indices.length 
  */
 function initGeometry()
 {
-    // initialize a square and insert it's details into the buffers at index 0
+    // initialize a square and insert it into shapes at index 0
     initSquare([0, 0, 0]);
-    initBuffers(0);
+    shapes.push(new Shape(vertices, null, textures, indices));
 
     clearArrs();
 
-    // initialize a sphere and insert it's details into the buffers at index 0
+    // initialize a sphere and insert it into shapes at index 1
     initSphere([0, 0, 0]);
-    initBuffers(1);
+    shapes.push(new Shape(vertices, null, textures, indices));
 
     clearArrs();
 
-    // initialize a cylinder and insert it's details into the buffers at index 0
+    // initialize a cylinder and insert it into shapes at index 2
     initCylinder([0, 0, 0]);
-    initBuffers(2);
+    shapes.push(new Shape(vertices, null, textures, indices));
+
+    clearArrs();
 }

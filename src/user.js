@@ -87,6 +87,7 @@ document.addEventListener("keydown", (e) => {
 
 var speed = 100;
 var length = 25;
+var pipeAmount = 1;
 
 function loadUserInteraction() {
     // Ambient RGB sliders
@@ -106,23 +107,40 @@ function loadUserInteraction() {
     slider3.oninput = function() { output3.innerHTML = this.value/100; } 
 
     // Speed Slider
-    var slider13 = document.getElementById("speed");
-    var output13 = document.getElementById("speedOutput");
-    output13.innerHTML = slider13.value + "%";
-    slider13.oninput = function() { output13.innerHTML = this.value + "%"; speed = this.value;} 
+    var slider4 = document.getElementById("speed");
+    var output4 = document.getElementById("speedOutput");
+    output4.innerHTML = slider4.value + "%";
+    slider4.oninput = function() { output4.innerHTML = this.value + "%"; speed = this.value;} 
 
     // Length Slider
-    var slider14 = document.getElementById("length");
-    var output14 = document.getElementById("lengthOutput");
-    output14.innerHTML = slider14.value;
-    slider14.oninput = function() { output14.innerHTML = this.value; length = this.value;} 
+    var slider5 = document.getElementById("length");
+    var output5 = document.getElementById("lengthOutput");
+    output5.innerHTML = slider5.value;
+    slider5.oninput = function() { output5.innerHTML = this.value; length = this.value;} 
+
+    // Pipe Slider
+    var slider6 = document.getElementById("pipe");
+    var output6 = document.getElementById("pipeOutput");
+    output6.innerHTML = slider6.value;
+    slider6.oninput = function() { 
+        output6.innerHTML = this.value; pipeAmount = this.value;
+
+        // initialize new pipes till number of pipes on canvas match pipes
+        while(pipes.length < pipeAmount)
+            pipes.push(new Pipe(coloredTexs[pipes.length]));
+
+        // pop/remove any extra pipes till number of pipes on canvas match pipes
+        while(pipes.length > pipeAmount)
+            pipes.pop();
+    } 
 }
 
 function updateDeets() {
 
-    // display the coordinates of the 'head' of the 'snake'
-    var x = queue[queue.length-1][0][0];
-    var z = queue[queue.length-1][0][1];
-    var y = queue[queue.length-1][0][2];
+    // display the coordinates of the 'head' of the red 'snake'
+    var q = pipes[0].queue;
+    var x = q[q.length - 1].coord[0];
+    var z = q[q.length - 1].coord[1];
+    var y = q[q.length - 1].coord[2];
     document.getElementById("deets").innerHTML = `Head-X: ${x} <br> Head-Y: ${z} <br> Head-Z: ${y}`;
 }

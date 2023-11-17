@@ -122,32 +122,61 @@ function setMatrixUniforms(pM, mvM)
 
 
 // Initialize our texture data and prepare it for rendering
-var red;
-var texture;
+var coloredTexs = [];
+var nullTex;
 
 var arrowTexture;
 function initTextures()
 {
-    red = gl.createTexture();
-    red.image = new Image();
-    red.image.onload = function() {
-      handleLoadedTexture(red)
+    var tempTex0 = gl.createTexture();
+    tempTex0.image = new Image();
+    tempTex0.image.onload = function() {
+      handleLoadedTexture(tempTex0)
     }
+    tempTex0.image.src = "./textures/red.png";
+    coloredTexs.push(tempTex0);
 
-    // get texture source from html
-    red.image.src = "./textures/red.png";
-
-    texture = gl.createTexture();
-    texture.image = new Image();
-    texture.image.onload = function() {
-      handleLoadedTexture(texture)
+    var tempTex1 = gl.createTexture();
+    tempTex1.image = new Image();
+    tempTex1.image.onload = function() {
+      handleLoadedTexture(tempTex1)
     }
+    tempTex1.image.src = "./textures/blue.png";
+    coloredTexs.push(tempTex1);
 
-    // get texture source from html
-    texture.image.src = "./textures/texture.png";
+    var tempTex2 = gl.createTexture();
+    tempTex2.image = new Image();
+    tempTex2.image.onload = function() {
+      handleLoadedTexture(tempTex2)
+    }
+    tempTex2.image.src = "./textures/green.png";
+    coloredTexs.push(tempTex2);
+
+    var tempTex3 = gl.createTexture();
+    tempTex3.image = new Image();
+    tempTex3.image.onload = function() {
+      handleLoadedTexture(tempTex3)
+    }
+    tempTex3.image.src = "./textures/purple.png";
+    coloredTexs.push(tempTex3);
+
+    var tempTex4 = gl.createTexture();
+    tempTex4.image = new Image();
+    tempTex4.image.onload = function() {
+      handleLoadedTexture(tempTex4)
+    }
+    tempTex4.image.src = "./textures/yellow.png";
+    coloredTexs.push(tempTex4);
+
+    nullTex = gl.createTexture();
+    nullTex.image = new Image();
+    nullTex.image.onload = function() {
+      handleLoadedTexture(nullTex)
+    }
+    nullTex.image.src = "./textures/texture.png";
   }
 
-function handleLoadedTexture(texture, terrain)
+function handleLoadedTexture(texture)
 {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -180,7 +209,11 @@ function startHelloWebGL()
    initShaders();
    initGeometry();
    initTextures();
+
+   // initialize a single pipe in the scene
+   pipes.push(new Pipe(coloredTexs[0]));
    
+   // set background of canvas to black
    gl.clearColor(0,0,0,1.0);
    gl.enable(gl.DEPTH_TEST);
 

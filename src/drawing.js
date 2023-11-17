@@ -5,69 +5,70 @@
  * 
  * The head is always queue[queue.length-1] and the tail is always queue[0]. New objects are added
  * to the head and old objects are expelled from the tail. */
-var queue = [[[30, -30, -30], 1, 0]]; //starting coordinates & sphere
-
-var s = [[[30, -40, -30], 1, 0]];
-
-var l = [Math.floor(Math.random() * 20) + 5, Math.floor(Math.random() * 20) + 5];
-var d = [Math.floor(Math.random() * 6), Math.floor(Math.random() * 6)];
-
-// var segmentLength = Math.floor(Math.random() * 20) + 5;
-// var dir = Math.floor(Math.random() * 6);
-
-var stack;
 
 /**
- * Generate the next segment and push it to the q. If a segment has been fully drawn (i.e. 
- * segmentLength == 0) then a new valid direction & segmentLength are calculated.
+ * The pipes array is an overly complicated massive data-structure that holds all the information
+ * about every pipe in the scene.
+ * 
+ * Each index of pipes holds 4 values:
+ * pipes[i][0] - A queue containing information about each object needed to draw the pipe
+ * pipes[i][1] - The remaining length of the current segment of the pipe being drawn
+ * pipes[i][2] - The direction/axis the current segment of the pipe is being drawn in (0 = X-axis,
+ *               1 = Y-axis, 2 = Z-axis)
+ * pipes[i][3] - The texture of this pipe
+ * 
+ * Each index of the queue contained at pipes[i][0] also has multiple values:
+ * pipes[i][0][j][0] - Coordinate (3-element array) of the object in 3D space
+ * pipes[i][0][j][0] - 
+ * pipes[i][0][j][0] - 
  */
-function addSegment(q, index) {
+var pipes = [];
 
-    // if a segment has been fully drawn...
-    if(l[index] == 0) {
-        // calculate a new segmentLength
-        l[index] = Math.floor(Math.random() * 20) + 5;
+var stack; /** Matrix Stack */
 
-        // push a sphere to the queue to be drawn
-        q.push([nextPos(q[q.length-1][0], index), 1, 0]);
+/**
+ * Initialize a new pipe to be drawn. The new pipe's information is appended to the end of
+ * the pipes array.
+ * 
+ * @param {GL_TEXTURE_2D} tex The texture of this pipe
+ */
+// function initPipe(tex) {
+//     pipes.push([ [[[randInt(10, 80), randInt(-40, -10), randInt(-80, -10)], 1, 0]], genLength(), genDirection(), tex ]);
+// }
 
-        // generate the 4 valid directions based on the last direction we were drawing in
-        var directions = [];
-        if(d[index] == 0 || d[index] == 1)      // X-axis
-            directions.push(2, 3, 4, 5);
-        else if(d[index] == 2 || d[index] == 3) // Y-axis
-            directions.push(0, 1, 4, 5);
-        else                          // Z-axis
-            directions.push(0, 1, 2, 3);
+/**
+ * Generate a valid length value.
+ * 
+ * @returns A valid length value
+ */
+// function genLength() { return randInt(5, 20); }
 
-        // randomly select a valid direction and check that when the entire segment is drawn, the
-        // resulting segment will be inbounds. If it isn't, try again till a valid direction is found
-        var inBounds = false;
-        var currPos = q[q.length - 1][0];
+/**
+ * Generate a valid direction value.
+ * 
+ * @returns A valid direction value
+ */
+// function genDirection() { return randInt(0, 6); }
 
-        while(!inBounds) {
-            d[index] = directions[Math.floor(Math.random() * 4)];
-            switch(d[index]) {
-                case 0:
-                    inBounds = currPos[0] - l[index] > 0;   break;
-                case 1:
-                    inBounds = currPos[0] + l[index] < 90;  break;
-                case 2:
-                    inBounds = currPos[1] - l[index] > -50; break;
-                case 3:
-                    inBounds = currPos[1] + l[index] < 0;   break;
-                case 4:
-                    inBounds = currPos[2] - l[index] > -90; break;
-                case 5:
-                    inBounds = currPos[2] + l[index] < 0;
-            }
-        }
-    }
-    // else just push a cylinder to the queue.
-    else {
-        q.push([nextPos(q[q.length-1][0], index), 2, Math.floor(d[index]/2)]);
-    }
-}
+/**
+ * Destroy/remove the last initialized pipe.
+ */
+// function destroyPipe() { pipes.pop(); }
+
+/**
+ * Generate the next segment for the pipe at the given index in pipes. If a segment has been
+ * fully drawn (i.e. pipes[index][1] == 0) then a new valid direction (pipes[index][2]) &
+ * length are calculated.
+ * 
+ * @param {int} index Which pipe in pipes to add a segment to.
+ */
+// function addSegment(index) {
+//     var pipe = pipes[index];
+//     var queue = pipe[0];
+//     var direction = pipe[2];
+
+    
+// }
 
 /**
  * Given a 3D position, calculate the next position based on the current direction
@@ -77,23 +78,12 @@ function addSegment(q, index) {
  * 
  * @returns pos with either an altered x, y, or z value
  */
-function nextPos(pos, index) {
-    var newPos = [pos[0], pos[1], pos[2]];
-    newPos[Math.floor(d[index]/2)] += (d[index] % 2 == 0 ? -1 : 1);
-    l[index]--;
-    return newPos;
-}
-
-/**
- * Takes two vec3 (3 element arrays), combines their values, and returns
- * the result.
- * 
- * @param {vec3} a The first vec3
- * @param {vec3} b The second vec3
- * 
- * @returns The resulting vec3 from a + b
- */
-function combineVec3(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+// function nextPos(pipe) {
+//     var newPos = [pipe[0][pipe[0].length-1][0][0], pipe[0][pipe[0].length-1][0][1], pipe[0][pipe[0].length-1][0][2]];
+//     newPos[Math.floor(pipe[2]/2)] += (pipe[2] % 2 == 0 ? -1 : 1);
+//     pipe[1]--;
+//     return newPos;
+// }
 
 /**
  * Draw the scene. Uses draw() to draw objects to the scene and performs the
@@ -103,6 +93,10 @@ function drawScene() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    // set perspective matrix
+    var pMatrix = mat4.create();
+    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
+
     //lighting code
     gl.uniform3f(
         shaderProgram.ambientColorUniform,
@@ -111,64 +105,40 @@ function drawScene() {
         parseFloat(document.getElementById("ambientB").value/100)
     );
 
-    var pMatrix = mat4.create();
-    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
+    // ========================================================================================================
 
-    // Our update handler, push a new shape/coordinate to the queue every x number of frames
-    if(totalF % Math.floor(30 / (speed/100.0)) == 0) {   
-        addSegment(queue, 0);
-        addSegment(s, 1);
-    }
+    // Our update handler, push a new shape/coordinate to each pipe every x number of frames
+    if(totalF % Math.floor(30 / (speed/100.0)) == 0)
+        pipes.forEach( (pipe) => { pipe.addSegment(); });
 
-    // 'trim' the tail of the queue till the desired length is reached
-    while(queue.length > length)
-        queue.shift();
+    // 'trim' the tail of the pipes till the desired length is reached
+    pipes.forEach ( (pipe) => { pipe.trimSegments(length); });
 
-    while(s.length > length)
-        s.shift();
-
-    stack = new mStack(); // Matrix Stack
+    stack = new MStack(); // Matrix Stack
 
     // rotate the scene to give us our angled view
     stack.rotateX(25);
     stack.rotateY(45);
 
-    // for each object/coord in q, draw it
-    queue.forEach( (obj) => {
-        stack.push();
-        stack.translate(obj[0]);
-
-        // rotate the obj based on the direction it is being drawn in
-        if(obj[2] == 0)
-            stack.rotateY(90);
-        else if(obj[2] == 1)
-            stack.rotateX(90);
-
-        // if the obj is a sphere, draw it slightly bigger
-        if(obj[1] == 1)
-            stack.scale(1.65);
-
-        draw(obj[1], red, pMatrix);
-        stack.pop();
-    });
-
-    // for each object/coord in q, draw it
-    s.forEach( (obj) => {
-        stack.push();
-        stack.translate(obj[0]);
-
-        // rotate the obj based on the direction it is being drawn in
-        if(obj[2] == 0)
-            stack.rotateY(90);
-        else if(obj[2] == 1)
-            stack.rotateX(90);
-
-        // if the obj is a sphere, draw it slightly bigger
-        if(obj[1] == 1)
-            stack.scale(1.65);
-
-        draw(obj[1], texture, pMatrix);
-        stack.pop();
+    // for each pipe, draw each object in the pipe's queue
+    pipes.forEach( (pipe) => {
+       pipe.queue.forEach( (segment) => {
+            stack.push();
+            stack.translate(segment.coord);
+    
+            // rotate the obj based on the direction it is being drawn in
+            if(segment.dir == 0)
+                stack.rotateY(90);
+            else if(segment.dir == 1)
+                stack.rotateX(90);
+    
+            // if the obj is a sphere, draw it slightly bigger
+            if(segment.shape == 1)
+                stack.scale(1.65);
+    
+            draw(segment.shape, pipe.tex, pMatrix);
+            stack.pop();
+        });
     });
 }
 

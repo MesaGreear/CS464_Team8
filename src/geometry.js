@@ -2,6 +2,7 @@
 var shapes = [];
 
 var vertices = [];
+var normals = [];
 var textures = [];
 var indices = [];
 
@@ -132,9 +133,13 @@ function initSphere(coord) {
             si = Math.sin(ai);
             ci = Math.cos(ai);
 
-            vertices.push(si * sj + coord[0]); // X
-            vertices.push(cj + coord[1]);      // Y
-            vertices.push(ci * sj + coord[2]); // Z
+            vertices.push(si * sj + coord[0],  // X
+                          cj + coord[1],       // Y
+                          ci * sj + coord[2]); // Z
+
+            normals.push(si * sj + coord[0],  
+                         cj + coord[1],       
+                         ci * sj + coord[2]); 
 
             textures.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
         }
@@ -167,10 +172,8 @@ var RADIUS = 1;
  * data to vertices, textures, & indices.
  * 
  * @param coord vec3 representing a 3D coordinate
- * @param dir   direction for cylinder to be facing. 0 --> x-axis, 1 --> y-axis,
- *              2/def --> z-axis
  */
-function initCylinder(coord, dir) {
+function initCylinder(coord) {
     // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
 
     var sectorStep = 2 * Math.PI/CYLINDER_QUALITY;
@@ -188,10 +191,6 @@ function initCylinder(coord, dir) {
         var h = -HEIGHT/2.0 + i * HEIGHT;
         var t = 1.0 - i;
 
-        // center point
-        // vertices.push(0, 0, h);
-        // textureCoords.push(0.5, 0.5);
-
         for(j = 0, k = 0; j <= CYLINDER_QUALITY; j++, k+=3) {
             var ux = unitVertices[k];
             var uy = unitVertices[k+1];
@@ -201,13 +200,9 @@ function initCylinder(coord, dir) {
             var cy = uy * RADIUS;
             var cz = h;
 
-            // based on direction being faced, push vertex coordinates differently
-            if(dir == 0) // x-axis
-                vertices.push(coord[0] + cz, coord[1] + cx, coord[2] + cy);
-            else if(dir == 1) // y-axis
-                vertices.push(coord[0] + cy, coord[1] + cz, coord[2] + cx);
-            else // z-axis
-                vertices.push(coord[0] + cx, coord[1] + cy, coord[2] + cz);
+            vertices.push(coord[0] + cx, coord[1] + cy, coord[2] + cz);
+
+            normals.push(ux, uy, uz);
 
             textures.push((j * 1.0)/CYLINDER_QUALITY, t);
         }
@@ -227,7 +222,7 @@ function initCylinder(coord, dir) {
 
 /**
  * Empty the vertices, textures, and indices arrays in preparation of new geometry data */
-function clearArrs() { vertices.length = 0; textures.length = 0; indices.length = 0; }
+function clearArrs() { vertices.length = 0; normals.length = 0; textures.length = 0; indices.length = 0; }
 
 /**
  * Initialize the scene's geometry data and buffers.
@@ -236,19 +231,23 @@ function initGeometry()
 {
     // initialize a square and insert it into shapes at index 0
     initSquare([0, 0, 0]);
-    shapes.push(new Shape(vertices, null, textures, indices));
+    shapes.push(null);
+    // shapes.push(new Shape(vertices, null, textures, indices));
 
+    console.log(normals);
     clearArrs();
 
     // initialize a sphere and insert it into shapes at index 1
     initSphere([0, 0, 0]);
-    shapes.push(new Shape(vertices, null, textures, indices));
+    shapes.push(new Shape(vertices, normals, textures, indices));
 
+    console.log(normals);
     clearArrs();
 
     // initialize a cylinder and insert it into shapes at index 2
     initCylinder([0, 0, 0]);
-    shapes.push(new Shape(vertices, null, textures, indices));
+    shapes.push(new Shape(vertices, normals, textures, indices));
 
+    console.log(normals);
     clearArrs();
 }

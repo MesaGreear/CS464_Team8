@@ -90,8 +90,8 @@ function initGLScene()
         shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
-        // shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
-        // gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
         
         shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
@@ -114,10 +114,10 @@ function setMatrixUniforms(pM, mvM)
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvM);
 
         // lighting controls for normals
-        // var normalMatrix = mat3.create();
-        // mat4.toInverseMat3(mvMatrix, normalMatrix);
-        // mat3.transpose(normalMatrix);
-        // gl.uniformMatrix3fv(shaderProgram.tnMatrixUniform, false, normalMatrix);
+        var normalMatrix = mat3.create();
+        mat4.toInverseMat3(mvM, normalMatrix);
+        mat3.transpose(normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.tnMatrixUniform, false, normalMatrix);
 }
 
 

@@ -97,10 +97,8 @@ function draw(index, texture, pMatrix) {
         gl.bindBuffer(gl.ARRAY_BUFFER, shape.vBuffer);
         gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, shape.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        // numVertices += vBuffers[index].numItems;
-
-        // gl.bindBuffer(gl.ARRAY_BUFFER, terNormalBuffer);
-        // gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, terNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, shape.nBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, shape.nBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, shape.tBuffer);
         gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, shape.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -108,8 +106,8 @@ function draw(index, texture, pMatrix) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
 
-        // gl.uniform1i(shaderProgram.samplerUniform, 0);
-        // gl.uniform1i(shaderProgram.useLightingUniform, true)
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+        gl.uniform1i(shaderProgram.useLightingUniform, true);
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shape.iBuffer);
     }

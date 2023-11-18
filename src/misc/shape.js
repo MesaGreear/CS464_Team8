@@ -20,7 +20,12 @@ class Shape {
         this.vBuffer.itemSize = 3;
         this.vBuffer.numItems = vertices.length/3;
 
-        //TODO: normals!
+        // initialize normal buffer
+        this.nBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.nBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+        this.nBuffer.itemSize = 3;
+        this.nBuffer.numItems = normals.length/3;
 
         // initialize texture buffer
         this.tBuffer = gl.createBuffer();

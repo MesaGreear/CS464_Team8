@@ -234,20 +234,17 @@ function initGeometry()
     shapes.push(null);
     // shapes.push(new Shape(vertices, null, textures, indices));
 
-    console.log(normals);
     clearArrs();
 
     // initialize a sphere and insert it into shapes at index 1
     initSphere([0, 0, 0]);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
-    console.log(normals);
     clearArrs();
 
     // initialize a cylinder and insert it into shapes at index 2
     initCylinder([0, 0, 0]);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
-    console.log(normals);
     clearArrs();
 }

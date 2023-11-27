@@ -45,25 +45,49 @@ function drawScene() {
     stack.rotateX(25);
     stack.rotateY(45);
 
-    // for each pipe, draw each object in the pipe's queue
+    // for each pipe, draw each segment in the pipe's queue
+    var segment;
     pipes.forEach( (pipe) => {
-       pipe.queue.forEach( (segment) => {
+        for(i = 0; i < pipe.queue.length; i++) {
+
+            segment = pipe.queue[i];
+
             stack.push();
-            stack.translate(segment.coord);
-    
-            // rotate the obj based on the direction it is being drawn in
-            if(segment.dir == 0)
-                stack.rotateY(90);
-            else if(segment.dir == 1)
-                stack.rotateX(90);
-    
-            // if the obj is a sphere, draw it slightly bigger
-            if(segment.shape == 1)
+
+            // if shape is a cylinder...
+            if(segment.shape == 2) {
+
+                // 'count' how many cylinders there are in a row so they can all be drawn as a single stretched
+                // cylinder, avoiding draw() calls for each segment
+                var sectionLength = 1;
+                i++;
+                for(;i < pipe.queue.length && pipe.queue[i].shape == 2; i++, sectionLength++);
+                i--;
+                
+                // move the stretched cylinder between the first and last coordinates in this section
+                stack.translate(
+                    combineVec3( divideVec3( subtractVec3(pipe.queue[i].coord, segment.coord), 2.0), segment.coord)
+                );
+
+                // rotate the section based on the direction it is being drawn in
+                if(segment.dir == 0)
+                    stack.rotateY(90);
+                else if(segment.dir == 1)
+                    stack.rotateX(90);
+                
+                // lastly, 'stretch' the cylinder to be the appropriate length
+                stack.scale([1, 1, sectionLength]);
+
+            }
+            // else it is a sphere
+            else {
+                stack.translate(segment.coord);
                 stack.scale(1.65);
-    
+            }
+
             draw(segment.shape, pipe.tex, pMatrix);
             stack.pop();
-        });
+        }
     });
 }
 

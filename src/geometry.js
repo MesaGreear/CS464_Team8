@@ -160,7 +160,7 @@ function initSphere(coord) {
       }
 }
 
-var CYLINDER_QUALITY = 8;
+var CYLINDER_QUALITY = 15;
 var CYLINDER_VERTICES = 2 * (CYLINDER_QUALITY + 1);
 var CYLINDER_INDICES = 6 * CYLINDER_QUALITY;
 

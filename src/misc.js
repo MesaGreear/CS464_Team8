@@ -210,13 +210,25 @@ function startHelloWebGL()
 
 var lastTime = 0;
 
+
+/* Calculating 'Updates Per Second' stuff */
+var iter = 0;
+var UPS_ITERATIONS = 100.0;
+var upsCalc = 0;
+var ups = 0;
+
 function animate() {
     var timeNow = new Date().getTime();
+    
     if (lastTime != 0) {
+        iter++;
         var elapsed = timeNow - lastTime;
-
-        // xRot += 0.25;
-        // yRot += 0.25;
+        upsCalc += (1000.0/elapsed)/UPS_ITERATIONS
+        if(iter % UPS_ITERATIONS == 0) {
+          iter = 0;
+          ups = upsCalc;
+          upsCalc = 0;
+        }
     }
     lastTime = timeNow;
 }

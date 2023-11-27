@@ -158,5 +158,5 @@ function updateDetails() {
     document.getElementById("deets").innerHTML = `Head-X: ${x} <br> Head-Y: ${z} <br> Head-Z: ${y}`;
 
     // display the number of draw calls, how many times the buffers were rebinded, and the total number of vertices in the scene
-    document.getElementById("deets2").innerHTML = `Draw() Calls: &nbsp&nbsp${draws} <br> Buffers Binded: ${binds} <br> Vertex Count: &nbsp&nbsp${vertices}`;
+    document.getElementById("deets2").innerHTML = `Draw() Calls: ${draws} <br> Vertex Count: ${vertices} <br> UPS: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ${Math.floor(ups)}`;
 }

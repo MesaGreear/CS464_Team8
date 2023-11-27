@@ -89,22 +89,125 @@ var speed = 100;
 var length = 25;
 var pipeAmount = 1;
 
+function loadAmbientLightInteraction() {
+    var ambientLightColorPicker = document.getElementById("ambientLightColor");
+    var ambientLightColorOutput = document.getElementById("ambientLightColorOutput");
+    ambientLightColorOutput.innerHTML = ambientLightColorPicker.value;
+    ambientLightColorPicker.oninput = function() { ambientLightColorOutput.innerHTML = this.value; }
+}
+
+function loadDirectionLightInteraction() {
+    var dirLightColorPicker = document.getElementById("dirLightColor");
+    var dirLightColorOutput = document.getElementById("dirLightColorOutput");
+    dirLightColorOutput.innerHTML = dirLightColorPicker.value;
+    dirLightColorPicker.oninput = function() { dirLightColorOutput.innerHTML = this.value; }
+
+    var dirLightDirectionXslider = document.getElementById("dirLightDirectionX");
+    var dirLightDirectionXoutput = document.getElementById("dirLightDirectionXOutput");
+    dirLightDirectionXoutput.innerHTML = "x: " + (this.value > 0 ? "+" : "") + dirLightDirectionXslider.value/100;
+    dirLightDirectionXslider.oninput = function() { 
+        dirLightDirectionXoutput.innerHTML = "x: " + (this.value > 0 ? "+" : "") + this.value/100; 
+    }
+    var dirLightDirectionYslider = document.getElementById("dirLightDirectionY");
+    var dirLightDirectionYoutput = document.getElementById("dirLightDirectionYOutput");
+    dirLightDirectionYoutput.innerHTML = "y: " + (this.value > 0 ? "+" : "") + dirLightDirectionYslider.value/100;
+    dirLightDirectionYslider.oninput = function() { 
+        dirLightDirectionYoutput.innerHTML = "y: " + (this.value > 0 ? "+" : "") + this.value/100; 
+    }
+    var dirLightDirectionZslider = document.getElementById("dirLightDirectionZ");
+    var dirLightDirectionZoutput = document.getElementById("dirLightDirectionZOutput");
+    dirLightDirectionZoutput.innerHTML = "z: " + (this.value > 0 ? "+" : "") + dirLightDirectionZslider.value/100;
+    dirLightDirectionZslider.oninput = function() { 
+        dirLightDirectionZoutput.innerHTML = "z: " + (this.value > 0 ? "+" : "") + this.value/100; 
+    }
+}
+
+function loadSpotlightInteraction() {
+    var spotlightColorPicker = document.getElementById("pointLightColor");
+    var spotlightColorOutput = document.getElementById("spotlightColorOutput");
+    spotlightColorOutput.innerHTML = spotlightColorPicker.value;
+    spotlightColorPicker.oninput = function() { spotlightColorOutput.innerHTML = this.value; }
+    
+    var spotlightAngleSlider = document.getElementById("spotlightAngle");
+    var spotlightAngleOutput = document.getElementById("spotlightAngleOutput");
+    spotlightAngleOutput.innerHTML = "\u03B8: " + spotlightAngleSlider.value + "\u00B0";
+    spotlightAngleSlider.oninput = function() { 
+        spotlightAngleOutput.innerHTML = "\u03B8: " + this.value + "\u00B0"; 
+    }
+
+    var spotlightPositionXslider = document.getElementById("spotlightPositionX");
+    var spotlightPositionXoutput = document.getElementById("spotlightPositionXOutput");
+    spotlightPositionXoutput.innerHTML = "x: " + (this.value > 0 ? "+" : "") + spotlightPositionXslider.value;
+    spotlightPositionXslider.oninput = function() { 
+        spotlightPositionXoutput.innerHTML = "x: " + this.value; 
+    }
+    var spotlightPositionYslider = document.getElementById("spotlightPositionY");
+    var spotlightPositionYoutput = document.getElementById("spotlightPositionYOutput");
+    spotlightPositionYoutput.innerHTML = "y: " + spotlightPositionYslider.value;
+    spotlightPositionYslider.oninput = function() { 
+        spotlightPositionYoutput.innerHTML = "y: " + this.value; 
+    }
+    var spotlightPositionZslider = document.getElementById("spotlightPositionZ");
+    var spotlightPositionZoutput = document.getElementById("spotlightPositionZOutput");
+    spotlightPositionZoutput.innerHTML = "z: " + spotlightPositionZslider.value;
+    spotlightPositionZslider.oninput = function() { 
+        spotlightPositionZoutput.innerHTML = "z: " + this.value; 
+    }
+
+    var spotlightDirectionPitchslider = document.getElementById("spotlightDirectionPitch");
+    var spotlightDirectionPitchoutput = document.getElementById("spotlightDirectionPitchOutput");
+    spotlightDirectionPitchoutput.innerHTML = "pitch: " + spotlightDirectionPitchslider.value + "\u00B0";
+    spotlightDirectionPitchslider.oninput = function() { 
+        spotlightDirectionPitchoutput.innerHTML = "pitch: " + this.value + "\u00B0"; 
+    }
+    var spotlightDirectionYawSlider = document.getElementById("spotlightDirectionYaw");
+    var spotlightDirectionYawOutput = document.getElementById("spotlightDirectionYawOutput");
+    spotlightDirectionYawOutput.innerHTML = "yaw: " + spotlightDirectionYawSlider.value + "\u00B0";
+    spotlightDirectionYawSlider.oninput = function() { 
+        spotlightDirectionYawOutput.innerHTML = "yaw: " + this.value + "\u00B0"; 
+    }
+}
+
+function loadPointLightInteraction() {
+    var pointLightColorPicker = document.getElementById("pointLightColor");
+    var pointLightColorOutput = document.getElementById("pointLightColorOutput");
+    pointLightColorOutput.innerHTML = pointLightColorPicker.value;
+    pointLightColorPicker.oninput = function() { pointLightColorOutput.innerHTML = this.value; }
+
+    var pointLightPositionXslider = document.getElementById("pointLightPositionX");
+    var pointLightPositionXoutput = document.getElementById("pointLightPositionXOutput");
+    pointLightPositionXoutput.innerHTML = "x: " + (this.value > 0 ? "+" : "") + pointLightPositionXslider.value;
+    pointLightPositionXslider.oninput = function() { 
+        pointLightPositionXoutput.innerHTML = "x: " + this.value; 
+    }
+    var pointLightPositionYslider = document.getElementById("pointLightPositionY");
+    var pointLightPositionYoutput = document.getElementById("pointLightPositionYOutput");
+    pointLightPositionYoutput.innerHTML = "y: " + pointLightPositionYslider.value;
+    pointLightPositionYslider.oninput = function() { 
+        pointLightPositionYoutput.innerHTML = "y: " + this.value; 
+    }
+    var pointLightPositionZslider = document.getElementById("pointLightPositionZ");
+    var pointLightPositionZoutput = document.getElementById("pointLightPositionZOutput");
+    pointLightPositionZoutput.innerHTML = "z: " + pointLightPositionZslider.value;
+    pointLightPositionZslider.oninput = function() { 
+        pointLightPositionZoutput.innerHTML = "z: " + this.value; 
+    }
+
+    var pointLightDistanceSlider = document.getElementById("pointLightDistance");
+    var pointLightDistanceOutput = document.getElementById("pointLightDistanceOutput");
+    pointLightDistanceOutput.innerHTML = "distance: " + pointLightDistanceSlider.value;
+    pointLightDistanceSlider.oninput = function() { 
+        pointLightDistanceOutput.innerHTML = "distance: " + this.value; 
+    }
+}
+
 function loadUserInteraction() {
-    // Ambient RGB sliders
-    var slider1 = document.getElementById("ambientR");
-    var output1 = document.getElementById("ambientROutput");
-    output1.innerHTML = slider1.value/100;
-    slider1.oninput = function() { output1.innerHTML = this.value/100; }
-
-    var slider2 = document.getElementById("ambientG");
-    var output2 = document.getElementById("ambientGOutput");
-    output2.innerHTML = slider2.value/100;
-    slider2.oninput = function() { output2.innerHTML = this.value/100; } 
-
-    var slider3 = document.getElementById("ambientB");
-    var output3 = document.getElementById("ambientBOutput");
-    output3.innerHTML = slider3.value/100;
-    slider3.oninput = function() { output3.innerHTML = this.value/100; } 
+    loadAmbientLightInteraction();
+    loadDirectionLightInteraction();
+    loadSpotlightInteraction();
+    loadPointLightInteraction();
+    
+    // SPOTLIGHT CONTROLS -------------------------------------------------------------------------
 
     // Speed Slider
     var slider4 = document.getElementById("speed");
@@ -134,6 +237,24 @@ function loadUserInteraction() {
             pipes.pop();
     } 
 }
+
+var drawSpotlightObject = false;
+var drawPointLightObject = false;
+
+/**
+ * Toggles drawing an object at the spotlight's position to allow easier placement.
+ * 
+ * @param {HTMLInputElement} box 
+ */
+function toggleSpotlightDraw(box) { drawSpotlightObject = box.checked; }
+
+/**
+ * Toggles drawing an object at the point light's position to allow easier placement.
+ * 
+ * @param {HTMLInputElement} box 
+ */
+function togglePointLightDraw(box) { drawPointLightObject = box.checked; }
+
 
 /** Line Mode flag */
 var lineMode = false; 

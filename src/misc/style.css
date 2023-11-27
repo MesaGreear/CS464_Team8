@@ -1,3 +1,9 @@
+body {
+    /*
+    background-color: cadetblue;
+    */    
+}
+
 .options {
     display: flex;
     flex-basis: 33%;
@@ -5,4 +11,22 @@
 
 .options_text{
     margin: 0px;
+}
+
+.lightControl{
+    padding: 3px;
+    border-style: groove;
+}
+
+.lightingControlPanel{
+    display: flex;
+    flex-direction: column;
+    gap: 1px; 
+    border-style: ridge;
+    padding: 3px;
+    width: fit-content;        
+}
+
+.lightingLabel{    
+    padding-left: 10px;    
 }

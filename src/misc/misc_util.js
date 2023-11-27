@@ -18,3 +18,20 @@ function combineVec3(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
  * @returns Random integer between the min (inclusive) and max (exclusive).
  */
 function randInt(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
+
+/**
+ * Converts a single hexadecimal color value to its RGB representation.
+ * 
+ * @param {String} hexColor string representing the hexadecimal color value
+ * 
+ * @returns vec3 representing [r,g,b] color
+ */
+function hexToRGB(hexColor) {
+    hexColor = hexColor.replace("#","");
+    var hexAsInteger = parseInt(hexColor, 16);
+    var r = (hexAsInteger >> 16) & 255;
+    var g = (hexAsInteger >> 8) & 255;
+    var b = hexAsInteger & 255;
+
+    return [r/255,g/255,b/255];
+}

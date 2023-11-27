@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Hello WebGL</title>
+	<title>Team 8 Final Project</title>
 	<meta name="generator" content="BBEdit 10.5" />
 
 <!-- load matrix manipulation helper methods -->	
@@ -28,13 +28,31 @@
     precision mediump float;
 
     varying vec2 vTextureCoord;
-    varying vec3 vLightWeighting; //rgb color from lights
+    varying vec3 vDirLightWeighting;
+    varying vec3 vSpotlightWeighting;
+    varying vec3 vPointLightWeighting;
 
-    uniform sampler2D uSampler;
+    uniform vec3 uAmbientColor;
+    uniform bool uUseLighting;
+
+    uniform sampler2D uColorMap;
+    
+    //testing
+    
 
     void main(void) {
-        vec4 tx_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        gl_FragColor = vec4(tx_FragColor.rgb * vLightWeighting, tx_FragColor.a);
+        vec4 tx_FragColor = texture2D(uColorMap, vec2(vTextureCoord.s, vTextureCoord.t));
+        float ambientPercent = 0.2;
+        vec4 dirAmb_fragColor = vec4(tx_FragColor.rgb * ((1.0-ambientPercent)*vDirLightWeighting + ambientPercent*uAmbientColor), tx_FragColor.a);
+        vec4 spotlight_FragColor = vec4(tx_FragColor.rgb * vSpotlightWeighting, tx_FragColor.a);
+        vec4 pointlight_FragColor = vec4(tx_FragColor.rgb * vPointLightWeighting, tx_FragColor.a);
+        if (uUseLighting) {
+            gl_FragColor = dirAmb_fragColor + spotlight_FragColor + pointlight_FragColor;
+        } else {
+            gl_FragColor = tx_FragColor;
+        }
+
+        
     }
 </script>
 
@@ -51,20 +69,50 @@
     uniform mat4 uPMatrix;
 
     varying vec2 vTextureCoord;
+    varying vec3 vDirLightWeighting;
+    varying vec3 vSpotlightWeighting;
+    varying vec3 vPointLightWeighting;
 
     // lighting components
     uniform mat3 uNMatrix;
-    varying vec3 vLightWeighting;
+    uniform vec3 uDirLightDirection;
+    uniform vec3 uDirLightColor;
+    uniform vec3 uSpotlightColor;
+    uniform vec3 uSpotlightPosition;
+    uniform vec3 uSpotlightDirection;
+    uniform float uSpotlightLimit;
+    uniform vec3 uPointLightColor;
+    uniform vec3 uPointLightPosition;
+    uniform float uPointLightDistance;
 
+    
     void main(void) {
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-
         vTextureCoord = aTextureCoord;
 
-        // very simple directional light that's all white and comes from [0.0, 1.0, 1.0]
+        // Directional Light Calculation
         vec3 transformedNormal = uNMatrix * aVertexNormal;
-        float directionalLightWeighting = max(dot(transformedNormal, vec3(0.0, 1.0, 1.0)), 0.0);
-        vLightWeighting = vec3(1.0, 1.0, 1.0) * directionalLightWeighting;
+        float directionalLightWeighting = max(dot(transformedNormal, uDirLightDirection), 0.0);
+        vDirLightWeighting = uDirLightColor * directionalLightWeighting;
+        
+        // Point Light Calculation
+        vec3 distToPointLight = uPointLightPosition - vec3(uMVMatrix * vec4(aVertexPosition,1.0));
+        vPointLightWeighting = uPointLightColor * smoothstep(-1.0*uPointLightDistance,0.0,-1.0*length(distToPointLight));
+        float pointLightWeighting = max(dot(transformedNormal, normalize(distToPointLight)),0.0);
+        vPointLightWeighting *= pointLightWeighting;
+
+        // Spotlight Calculation
+        vec3 distToSpotlight = uSpotlightPosition - vec3(uMVMatrix * vec4(aVertexPosition,1.0));
+        vSpotlightWeighting = uSpotlightColor * smoothstep(-100.0,-50.0,-1.0*length(distToSpotlight));
+        float spotlightWeighting = 0.0;
+        if (max(dot(uSpotlightDirection, normalize(distToSpotlight)),0.0) >= uSpotlightLimit) {
+            spotlightWeighting = max(dot(transformedNormal, uSpotlightDirection), 0.0);
+        }        
+        vSpotlightWeighting = uSpotlightColor * spotlightWeighting;    
+
+
+        
+        
     }
 </script>
 
@@ -82,7 +130,7 @@
 
 <body onload="startHelloWebGL()">
 <h1>Team 8</h1>
-<h2>Screensaver</h2>
+<h2>Screensaver - the internet is a series of tubes</h2>
 
 <!-- embed the HTML5 Canvas Drawing object on the page.-->
 <!-- Name the canvas 'hellowebgl' for the javascript code. -->
@@ -97,70 +145,168 @@
         </canvas>
     </div>
 
+
+    <!-- // ================================================================================= -->
+    <!-- //                           USER CONTROL STUFF                                      -->
+    <!-- // ================================================================================= -->
     <div style="display: flex; flex-direction: column; gap: 10px">
-        <!-- // ================================================================================= -->
-        <!-- //                           USER CONTROL STUFF                                      -->
-        <!-- // ================================================================================= -->
+        
         <div style="display: flex; gap: 10px">
-
             <div style="padding: 3px; border-style: solid;">
-                <h4>Ambient RGB</h4>
-                <div id="ambientROutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="0" max="100" value="100" class="slider" id="ambientR">
-                </div>
-
-                <div id="ambientGOutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="0" max="100" value="100" class="slider" id="ambientG">
-                </div>
-
-                <div id="ambientBOutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="0" max="100" value="100" class="slider" id="ambientB">
-                </div>
-            </div>
-        </div>
-
-        <div style="display: flex; gap: 0px; flex-direction: column;">
             <div>
-                <h4 style="margin-bottom: 5px;">Texture to use:</h4>
-                <div class="textcontainer">
-                    <input type="text" value="texture.png" class="text" id="texture" onchange="initTextures()">
+                <h4 style="margin-bottom: 5px;">Speed</h4>
+                <div id="speedOutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
                 </div>
             </div>
-        </div>
-        <div class="options">
-            <div class="checkcontainer">
-                <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
+            <div>
+                <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
+                <div id="lengthOutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="500" value="25" class="slider" id="length">
+                </div>
             </div>
-            <h4 class="options_text">Line Mode</h4>
+            <div>
+                <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
+                <div id="pipeOutput"></div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
+                </div>
+            </div>
+            <div style="display: flex; gap: 0px; flex-direction: column;">
+                <div>
+                    <h4 style="margin-bottom: 5px;">Texture to use:</h4>
+                    <div class="textcontainer">
+                        <input type="text" value="texture.png" class="text" id="texture" onchange="initTextures()">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="options">
+                <div class="checkcontainer">
+                    <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
+                </div>
+                <h4 class="options_text">Line Mode</h4>
+            </div>
+            <br>
+            <br>
         </div>
-        <br>
-        <br>
+        </div>
     </div>
 </div>
+<div class="lightingControlPanel">
+    <div class="lightingLabel">
+        <h2>LIGHTING CONTROLS</h2>
+        <p>To disable a light source, set its color to black.</p>
+    </div>    
+    
+    <!-- Lighting Controls-->
+    <div style="display: flex; gap: 3px">       
+        <div class="lightControl">
+            <h3>Ambient Light</h3>
+            <h4>Color</h4>
+            <div id="ambientLightColorOutput"></div>
+            <div class="colorcontainer">
+                <input type="color" value="#ffffff" id="ambientLightColor">
+            </div>
+        </div>
+        <div class="lightControl">
+            <h3>Direction Light</h3>
+            <h4>Color</h4>
+            <div id="dirLightColorOutput"></div>
+            <div class = "colorcontainer">
+                <input type="color" value="#ffffff" id="dirLightColor">
+            </div>
+            <h4>Direction</h4>
+            <div id="dirLightDirectionXOutput"></div>
+            <div class="slidecontainer">                    
+                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionX">
+            </div>
 
-<div style="display: flex; flex-wrap: wrap; width: 640px; gap: 30px">
-    <div>
-        <h4 style="margin-bottom: 5px;">Speed</h4>
-        <div id="speedOutput"></div>
-        <div class="slidecontainer">
-            <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
+            <div id="dirLightDirectionYOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionY">
+            </div>
+
+            <div id="dirLightDirectionZOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionZ">
+            </div>                
         </div>
-    </div>
-    <div>
-        <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
-        <div id="lengthOutput"></div>
-        <div class="slidecontainer">
-            <input type="range" min="1" max="500" value="25" class="slider" id="length">
+        <div class="lightControl">
+            <h3>Spotlight</h3>
+            <div>
+                <input type="checkbox" class="checkbox" checked="false" id="drawSpotlightObject" onchange="toggleSpotlightDraw(this)">
+                Show object in world
+            </div>
+            <h4>Color</h4>
+            <div id="spotlightColorOutput"></div>
+            <div class = "colorcontainer">
+                <input type="color" value="#ffffff" id="spotlightColor">
+            </div>
+            <h4>Width (angle of effect)</h4>
+            <div id="spotlightAngleOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="0" max="90" value="20" class="slider" id="spotlightAngle">
+            </div>
+            <h4>Position (camera relative)</h4>
+            <div id="spotlightPositionXOutput"></div>
+            <div class="slidecontainer">                    
+                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionX">
+            </div>
+
+            <div id="spotlightPositionYOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionY">
+            </div>
+
+            <div id="spotlightPositionZOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-100" max="-5" value="-10" class="slider" id="spotlightPositionZ">
+            </div>
+            <h4>Direction (Euler angles)</h4>
+            <div id="spotlightDirectionPitchOutput"></div>
+            <div class="slidecontainer">                    
+                <input type="range" min="-360" max="360" value="-30" class="slider" id="spotlightDirectionPitch">
+            </div>
+
+            <div id="spotlightDirectionYawOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-360" max="360" value="0" class="slider" id="spotlightDirectionYaw">
+            </div>
         </div>
-    </div>
-    <div>
-        <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
-        <div id="pipeOutput"></div>
-        <div class="slidecontainer">
-            <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
+        <div class="lightControl">
+            <h3>Point Light</h3>
+            <div>
+                <input type="checkbox" class="checkbox" checked="false" id="drawSpotlightObject" onchange="togglePointLightDraw(this)">
+                Show object in world
+            </div>
+            <h4>Color</h4>
+            <div id="pointLightColorOutput"></div>
+            <div class = "colorcontainer">
+                <input type="color" value="#ffffff" id="pointLightColor">
+            </div>
+            <h4>Position</h4>
+            <div id="pointLightPositionXOutput"></div>
+            <div class="slidecontainer">                    
+                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionX">
+            </div>
+
+            <div id="pointLightPositionYOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionY">
+            </div>
+
+            <div id="pointLightPositionZOutput"></div>
+            <div class="slidecontainer">
+                <input type="range" min="-100" max="-5" value="-30" class="slider" id="pointLightPositionZ">
+            </div>
+            <h4>Distance</h4>
+            <div id="pointLightDistanceOutput"></div>
+            <div class="slidecontainer">                    
+                <input type="range" min="0" max="100" value="50" class="slider" id="pointLightDistance">
+            </div>
         </div>
     </div>
 </div>

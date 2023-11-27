@@ -87,6 +87,7 @@ function initGLScene()
 
         gl.useProgram(shaderProgram);
 
+        //VERTEX ATTRIBUTES
         shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
@@ -96,16 +97,24 @@ function initGLScene()
         shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
         gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
 
+        //UNIFORMS
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-
-        //code to handle lighting
         shaderProgram.tnMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
         shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
         shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
-        shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightingDirection");
-        shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+        shaderProgram.dirLightDirectionUniform = gl.getUniformLocation(shaderProgram, "uDirLightDirection");
+        shaderProgram.dirLightColorUniform = gl.getUniformLocation(shaderProgram, "uDirLightColor");
+        shaderProgram.spotlightColorUniform = gl.getUniformLocation(shaderProgram, "uSpotlightColor");
+        shaderProgram.spotlightPositionUniform = gl.getUniformLocation(shaderProgram, "uSpotlightPosition");
+        shaderProgram.spotlightDirectionUniform = gl.getUniformLocation(shaderProgram, "uSpotlightDirection");
+        shaderProgram.spotlightLimitUniform = gl.getUniformLocation(shaderProgram, "uSpotlightLimit");
+        shaderProgram.pointLightColorUniform = gl.getUniformLocation(shaderProgram, "uPointLightColor");
+        shaderProgram.pointLightPositionUniform = gl.getUniformLocation(shaderProgram, "uPointLightPosition");
+        shaderProgram.pointLightDistanceUniform = gl.getUniformLocation(shaderProgram, "uPointLightDistance");        
+
+        //SAMPLERS
+        shaderProgram.colorMapSampler = gl.getUniformLocation(shaderProgram, "uColorMap");
     }
 
 function setMatrixUniforms(pM, mvM)
@@ -122,59 +131,35 @@ function setMatrixUniforms(pM, mvM)
 
 
 // Initialize our texture data and prepare it for rendering
+
+var glTextures = [];
+var textureFiles = [
+  "./textures/red.png",
+  "./textures/blue.png",
+  "./textures/green.png",
+  "./textures/purple.png",
+  "./textures/yellow.png",
+  "./textures/texture.png",
+]
+var tempTexture = [];
+
 var coloredTexs = [];
 var nullTex;
-
 var arrowTexture;
+
 function initTextures()
 {
-    var tempTex0 = gl.createTexture();
-    tempTex0.image = new Image();
-    tempTex0.image.onload = function() {
-      handleLoadedTexture(tempTex0)
+  for (let i = 0; i < textureFiles.length; i++) {
+    tempTexture.push(gl.createTexture());
+    tempTexture[i].image = new Image();
+    tempTexture[i].image.onload = function() {
+      handleLoadedTexture(tempTexture[i])
     }
-    tempTex0.image.src = "./textures/red.png";
-    coloredTexs.push(tempTex0);
-
-    var tempTex1 = gl.createTexture();
-    tempTex1.image = new Image();
-    tempTex1.image.onload = function() {
-      handleLoadedTexture(tempTex1)
-    }
-    tempTex1.image.src = "./textures/blue.png";
-    coloredTexs.push(tempTex1);
-
-    var tempTex2 = gl.createTexture();
-    tempTex2.image = new Image();
-    tempTex2.image.onload = function() {
-      handleLoadedTexture(tempTex2)
-    }
-    tempTex2.image.src = "./textures/green.png";
-    coloredTexs.push(tempTex2);
-
-    var tempTex3 = gl.createTexture();
-    tempTex3.image = new Image();
-    tempTex3.image.onload = function() {
-      handleLoadedTexture(tempTex3)
-    }
-    tempTex3.image.src = "./textures/purple.png";
-    coloredTexs.push(tempTex3);
-
-    var tempTex4 = gl.createTexture();
-    tempTex4.image = new Image();
-    tempTex4.image.onload = function() {
-      handleLoadedTexture(tempTex4)
-    }
-    tempTex4.image.src = "./textures/yellow.png";
-    coloredTexs.push(tempTex4);
-
-    nullTex = gl.createTexture();
-    nullTex.image = new Image();
-    nullTex.image.onload = function() {
-      handleLoadedTexture(nullTex)
-    }
-    nullTex.image.src = "./textures/texture.png";
+    tempTexture[i].image.src = textureFiles[i];
+    glTextures.push(tempTexture[i]);
   }
+  coloredTexs = glTextures.slice(0,6);
+}
 
 function handleLoadedTexture(texture)
 {

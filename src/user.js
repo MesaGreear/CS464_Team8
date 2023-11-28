@@ -56,32 +56,17 @@ function handleMouseMove(event) {
 //                              Key Presses Code
 // =================================================================================
 
-var mini = false;
+var fullScreen = false;
 
 document.addEventListener("keydown", (e) => {
-    // switch(e.key) {
-    //     case 'm':
-    //         mini = !mini;
-    //         break;
-    //     case 'a':
-    //         dir -= 5;
-    //         break;
-    //     case 'd':
-    //         dir += 5;
-    //         break;
-    //     case 's':
-    //         speed -= 0.00025;
-    //         break;
-    //     case 'w':
-    //         speed += 0.00025;
-    //         break;
-    //     case 'q':
-    //         angle -= 3;
-    //         break;
-    //     case 'e':
-    //         angle += 3;
-    //         break;
-    // }
+    switch(e.key) {
+        case 'f':
+            fullScreen = !fullScreen;
+            var canvas = document.querySelector("#hellowebgl");
+            if(fullScreen) {canvas.style.width = "90vw"; canvas.style.height = "100vh";}
+            else           {canvas.style.width = "640px"; canvas.style.height = "480px";}
+            break;
+    }
 });
 
 

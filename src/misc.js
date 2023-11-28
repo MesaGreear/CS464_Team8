@@ -139,13 +139,12 @@ var textureFiles = [
   "./textures/green.png",
   "./textures/purple.png",
   "./textures/yellow.png",
-  "./textures/texture.png",
+  "./textures/nullTex.png",
+  "./textures/brightNullTex.png",
 ]
 var tempTexture = [];
 
 var coloredTexs = [];
-var nullTex;
-var arrowTexture;
 
 function initTextures()
 {

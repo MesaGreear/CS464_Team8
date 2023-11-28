@@ -87,10 +87,6 @@ function drawScene() {
     // 'trim' the tail of the pipes till the desired length is reached
     pipes.forEach ( (pipe) => { pipe.trimSegments(length); });
 
-    // rotate the scene to give us our angled view
-    //stack.rotateX(25);
-    //stack.rotateY(45);
-
     // for each pipe, draw each segment in the pipe's queue
     var segment;
     pipes.forEach( (pipe) => {
@@ -136,27 +132,40 @@ function drawScene() {
         }
     });
 
+    stack.restore(); // restore stack to pre-rotated version
+    
+    // draw the spotlight
     if (drawSpotlightObject) {
         stack.push();    
-        stack.restore();        
         stack.translate(spotlightPosition);
         stack.push();
         stack.rotateY(-spotlightPitchYaw[1]);
         stack.rotateX(spotlightPitchYaw[0]);    
         draw(1,glTextures[5],pMatrix,false);
         stack.pop();
+
+        stack.push();
         stack.translate(vec3.scale(spotlightDirection,-1));    
         stack.rotateY(-spotlightPitchYaw[1]);
-        stack.rotateX(spotlightPitchYaw[0]);;    
+        stack.rotateX(spotlightPitchYaw[0]);
         stack.scale([0.5,0.5,1.5]);
-        draw(2,glTextures[5],pMatrix,false);
+        draw(2,glTextures[6],pMatrix,false);
+        stack.pop();
+
+        stack.push();
+        stack.translate(vec3.scale(spotlightDirection,2));
+        stack.rotateY(-spotlightPitchYaw[1]);
+        stack.rotateX(spotlightPitchYaw[0]);
+        stack.scale(0.6);
+        draw(3,glTextures[6],pMatrix,false);
+        stack.pop();
         stack.pop();
     }
+    // draw the point light
     if (drawPointLightObject) {
         stack.push();    
-        stack.restore();        
         stack.translate(pointLightPosition);
-        draw(1,glTextures[5],pMatrix,false);
+        draw(3,glTextures[6],pMatrix,false);
         stack.pop();
     }
 }

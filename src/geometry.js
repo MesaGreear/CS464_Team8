@@ -9,49 +9,46 @@ var indices = [];
 // TODO: remove coord parameters from init functions?
 
 /**
- * Generate a square centered around the given coordinates and push its geometry
- * data to vertices, textures, & indices.
- * 
- * @param coord vec3 representing a 3D coordinate
+ * Generate a square and push its geometry data to vertices, textures, & indices.
  */
-function initSquare(coord) {
+function initSquare() {
 
     vertices.push(
         // Front face
-        -1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
-         1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
-        -1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
+        -1.0, -1.0,  1.0,
+         1.0, -1.0,  1.0,
+         1.0,  1.0,  1.0,
+        -1.0,  1.0,  1.0,
 
         // Back face
-        -1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
-        -1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
+        -1.0, -1.0, -1.0,
+        -1.0,  1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0, -1.0, -1.0,
 
         // Top face
-        -1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
-        -1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
+        -1.0,  1.0, -1.0,
+        -1.0,  1.0,  1.0,
+         1.0,  1.0,  1.0,
+         1.0,  1.0, -1.0,
 
         // Bottom face
-        -1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
-        -1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
+        -1.0, -1.0, -1.0,
+         1.0, -1.0, -1.0,
+         1.0, -1.0,  1.0,
+        -1.0, -1.0,  1.0,
 
         // Right face
-         1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
-         1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
-         1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
+         1.0, -1.0, -1.0,
+         1.0,  1.0, -1.0,
+         1.0,  1.0,  1.0,
+         1.0, -1.0,  1.0,
 
         // Left face
-        -1.0 + coord[0], -1.0 + coord[1], -1.0 + coord[2],
-        -1.0 + coord[0], -1.0 + coord[1],  1.0 + coord[2],
-        -1.0 + coord[0],  1.0 + coord[1],  1.0 + coord[2],
-        -1.0 + coord[0],  1.0 + coord[1], -1.0 + coord[2],
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0,  1.0,
+        -1.0,  1.0,  1.0,
+        -1.0,  1.0, -1.0,
     );
 
     // TODO: normals?
@@ -112,18 +109,18 @@ var SPHERE_INDICES = SPHERE_QUALITY * SPHERE_QUALITY * 6;
 
 
 /**
- * Generate a sphere centered around the given coordinates and push its geometry
- * data to vertices, textures, & indices.
+ * Generate a sphere and push its geometry data to vertices, textures, & indices.
  * 
- * @param coord vec3 representing a 3D coordinate
+ * @param {Float} bump The 'bumpiness'/'spikiness' of this sphere
  */
-function initSphere(coord) {
+function initSphere(bump) {
     // Lotsa help from here (https://stackoverflow.com/questions/47756053/webgl-try-draw-sphere)
     var i, ai, si, ci;
     var j, aj, sj, cj;
     var p1, p2;
 
     // vertices
+    var b;
     for(j = 0; j <= SPHERE_QUALITY; j++) {
         aj = j * Math.PI / SPHERE_QUALITY;
         sj = Math.sin(aj);
@@ -133,13 +130,16 @@ function initSphere(coord) {
             si = Math.sin(ai);
             ci = Math.cos(ai);
 
-            vertices.push(si * sj + coord[0],  // X
-                          cj + coord[1],       // Y
-                          ci * sj + coord[2]); // Z
+            // calculate the 'added bumpiness' of this vertex
+            b = 1.0 + (i % 2 == 0 && j % 2 == 1 ? bump : -bump);
 
-            normals.push(si * sj + coord[0],  
-                         cj + coord[1],       
-                         ci * sj + coord[2]); 
+            vertices.push(si * sj * b, // X
+                          cj * b,       // Y
+                          ci * sj * b); // Z
+
+            normals.push(si * sj * b,  
+                         cj * b,       
+                         ci * sj * b); 
 
             textures.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
         }
@@ -168,12 +168,9 @@ var HEIGHT = 1;
 var RADIUS = 1;
 
 /**
- * Generate a cylinder centered around the given coordinates and push its geometry
- * data to vertices, textures, & indices.
- * 
- * @param coord vec3 representing a 3D coordinate
+ * Generate a cylinder push its geometry data to vertices, textures, & indices.
  */
-function initCylinder(coord) {
+function initCylinder() {
     // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
 
     var sectorStep = 2 * Math.PI/CYLINDER_QUALITY;
@@ -200,7 +197,7 @@ function initCylinder(coord) {
             var cy = uy * RADIUS;
             var cz = h;
 
-            vertices.push(coord[0] + cx, coord[1] + cy, coord[2] + cz);
+            vertices.push(cx, cy, cz);
 
             normals.push(ux, uy, uz);
 
@@ -230,20 +227,26 @@ function clearArrs() { vertices.length = 0; normals.length = 0; textures.length 
 function initGeometry()
 {
     // initialize a square and insert it into shapes at index 0
-    initSquare([0, 0, 0]);
+    initSquare();
     shapes.push(null);
     // shapes.push(new Shape(vertices, null, textures, indices));
 
     clearArrs();
 
     // initialize a sphere and insert it into shapes at index 1
-    initSphere([0, 0, 0]);
+    initSphere(0);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
     clearArrs();
 
     // initialize a cylinder and insert it into shapes at index 2
-    initCylinder([0, 0, 0]);
+    initCylinder();
+    shapes.push(new Shape(vertices, normals, textures, indices));
+
+    clearArrs();
+
+    // initialize a spiky sphere and insert it into shapes at index 3
+    initSphere(0.15);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
     clearArrs();

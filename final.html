@@ -128,187 +128,193 @@
 <!-- declare the "body" of the HTML document-->
 <!-- the onload attribute specifies a javascript function to execute when the body tag is loaded into the browser -->
 
-<body onload="startHelloWebGL()">
-<h1>Team 8</h1>
-<h2>Screensaver - the internet is a series of tubes</h2>
+<body onload="startHelloWebGL()" style="margin: 0px; width: 100%; height: 100vh; overflow-y: hidden;">
 
 <!-- embed the HTML5 Canvas Drawing object on the page.-->
 <!-- Name the canvas 'hellowebgl' for the javascript code. -->
-<div style="display: flex; gap: 30px">
-    <div>
-        <div style="display: flex; gap: 100px">
-            <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace;" id="deets"></p>
-            <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace; position: absolute; margin-left: 200px;" id="deets2"></p>
-        </div>
-        <canvas id="hellowebgl" width=1920 height=1080 style="width: 640px; height: 480px;">
-        If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
-        </canvas>
+
+<div id="main" style="display: flex; flex-direction: column; height:100%; width: 100%;">
+
+    <div id="top" style="background-color: rgb(94, 94, 99); display: flex; border-bottom: 8px double purple; flex: 0 0 50px;">
+        <h1 style="margin: 8px 0px 0px 10px; color:azure; font-family: Helvetica, sans-serif;">Team 8</h1>
+        <h3 style="margin: 19px 0px 0px 7px; color:azure;">The Internet is a Series of Tubes</h3>
     </div>
 
+    <div id="center" style="display:flex; margin: 0px; padding: 0px; height: 100%; flex: 1 1 auto;">
 
-    <!-- // ================================================================================= -->
-    <!-- //                           USER CONTROL STUFF                                      -->
-    <!-- // ================================================================================= -->
-    <div style="display: flex; flex-direction: column; gap: 10px">
+        <div id="left" style="display: flex; gap: 30px;">
+            <div id="details" style="position: absolute; display: flex; gap: 20px; margin: 5px; padding: 5px; background-color: #77777777; border: 3px dotted gray;">
+                <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace; color:antiquewhite; width: 125px;" id="deets"></p>
+                <p style="margin: 0px; font-weight: bold; font-family: 'Courier New', Courier, monospace; color:antiquewhite; width: 225px;" id="deets2"></p>
+            </div>
+
+            <canvas id="hellowebgl" width="1920" height="1080" style="height: 100%; width: 100%;">
+                If you're seeing this your web browser doesn't support the &lt;canvas&gt; element. Ouch!
+            </canvas>
+        </div>
+
+
+
+        <div id="right" style="background-color: rgb(85, 82, 78); width: 250px; min-width: 250px; max-width: 250px; height: 100%; padding: 10px; border-left: 8px double purple; overflow-y: auto;">
+            
+            <div style="display: flex; flex-direction: column; gap: 10px">
         
-        <div style="display: flex; gap: 10px">
-            <div style="padding: 3px; border-style: solid;">
-            <div>
-                <h4 style="margin-bottom: 5px;">Speed</h4>
-                <div id="speedOutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
+                <div style="display: flex; gap: 10px">
+                    <div style="padding: 3px; border-style: solid;">
+                    <div>
+                        <h4 style="margin-bottom: 5px;">Speed</h4>
+                        <div id="speedOutput"></div>
+                        <div class="slidecontainer">
+                            <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
+                        <div id="lengthOutput"></div>
+                        <div class="slidecontainer">
+                            <input type="range" min="1" max="500" value="25" class="slider" id="length">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
+                        <div id="pipeOutput"></div>
+                        <div class="slidecontainer">
+                            <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0px; flex-direction: column;">
+                        <div>
+                            <h4 style="margin-bottom: 5px;">Texture to use:</h4>
+                            <div class="textcontainer">
+                                <input type="text" value="texture.png" class="text" id="texture" onchange="initTextures()">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="options">
+                        <div class="checkcontainer">
+                            <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
+                        </div>
+                        <h4 class="options_text">Line Mode</h4>
+                    </div>
+                    <br>
+                    <br>
+                </div>
                 </div>
             </div>
-            <div>
-                <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
-                <div id="lengthOutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="1" max="500" value="25" class="slider" id="length">
+
+            <div style="display: flex; flex-direction: column; gap: 3px">       
+                <div class="lightControl">
+                    <h3>Ambient Light</h3>
+                    <h4>Color</h4>
+                    <div id="ambientLightColorOutput"></div>
+                    <div class="colorcontainer">
+                        <input type="color" value="#ffffff" id="ambientLightColor">
+                    </div>
                 </div>
-            </div>
-            <div>
-                <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
-                <div id="pipeOutput"></div>
-                <div class="slidecontainer">
-                    <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
+                <div class="lightControl">
+                    <h3>Direction Light</h3>
+                    <h4>Color</h4>
+                    <div id="dirLightColorOutput"></div>
+                    <div class = "colorcontainer">
+                        <input type="color" value="#ffffff" id="dirLightColor">
+                    </div>
+                    <h4>Direction</h4>
+                    <div id="dirLightDirectionXOutput"></div>
+                    <div class="slidecontainer">                    
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionX">
+                    </div>
+        
+                    <div id="dirLightDirectionYOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionY">
+                    </div>
+        
+                    <div id="dirLightDirectionZOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionZ">
+                    </div>                
                 </div>
-            </div>
-            <div style="display: flex; gap: 0px; flex-direction: column;">
-                <div>
-                    <h4 style="margin-bottom: 5px;">Texture to use:</h4>
-                    <div class="textcontainer">
-                        <input type="text" value="texture.png" class="text" id="texture" onchange="initTextures()">
+                <div class="lightControl">
+                    <h3>Spotlight</h3>
+                    <div>
+                        <input type="checkbox" class="checkbox" id="drawSpotlightObject" onchange="toggleSpotlightDraw(this)">
+                        Show object in world
+                    </div>
+                    <h4>Color</h4>
+                    <div id="spotlightColorOutput"></div>
+                    <div class = "colorcontainer">
+                        <input type="color" value="#ffffff" id="spotlightColor">
+                    </div>
+                    <h4>Width (angle of effect)</h4>
+                    <div id="spotlightAngleOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="0" max="90" value="20" class="slider" id="spotlightAngle">
+                    </div>
+                    <h4>Position (camera relative)</h4>
+                    <div id="spotlightPositionXOutput"></div>
+                    <div class="slidecontainer">                    
+                        <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionX">
+                    </div>
+        
+                    <div id="spotlightPositionYOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionY">
+                    </div>
+        
+                    <div id="spotlightPositionZOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-100" max="-5" value="-10" class="slider" id="spotlightPositionZ">
+                    </div>
+                    <h4>Direction (Euler angles)</h4>
+                    <div id="spotlightDirectionPitchOutput"></div>
+                    <div class="slidecontainer">                    
+                        <input type="range" min="-360" max="360" value="-30" class="slider" id="spotlightDirectionPitch">
+                    </div>
+        
+                    <div id="spotlightDirectionYawOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-360" max="360" value="0" class="slider" id="spotlightDirectionYaw">
+                    </div>
+                </div>
+                <div class="lightControl">
+                    <h3>Point Light</h3>
+                    <div>
+                        <input type="checkbox" class="checkbox" id="drawSpotlightObject" onchange="togglePointLightDraw(this)">
+                        Show object in world
+                    </div>
+                    <h4>Color</h4>
+                    <div id="pointLightColorOutput"></div>
+                    <div class = "colorcontainer">
+                        <input type="color" value="#ffffff" id="pointLightColor">
+                    </div>
+                    <h4>Position (camera relative)</h4>
+                    <div id="pointLightPositionXOutput"></div>
+                    <div class="slidecontainer">                    
+                        <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionX">
+                    </div>
+        
+                    <div id="pointLightPositionYOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionY">
+                    </div>
+        
+                    <div id="pointLightPositionZOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="-100" max="-5" value="-30" class="slider" id="pointLightPositionZ">
+                    </div>
+                    <h4>Distance</h4>
+                    <div id="pointLightDistanceOutput"></div>
+                    <div class="slidecontainer">                    
+                        <input type="range" min="0" max="100" value="50" class="slider" id="pointLightDistance">
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="options">
-                <div class="checkcontainer">
-                    <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
-                </div>
-                <h4 class="options_text">Line Mode</h4>
-            </div>
-            <br>
-            <br>
+            
+            <div style="height: 100px;"></div> <!-- Space at the bottom of controls -->
+
         </div>
-        </div>
-    </div>
-</div>
-<div class="lightingControlPanel">
-    <div class="lightingLabel">
-        <h2>LIGHTING CONTROLS</h2>
-        <p>To disable a light source, set its color to black.</p>
-    </div>    
-    
-    <!-- Lighting Controls-->
-    <div style="display: flex; gap: 3px">       
-        <div class="lightControl">
-            <h3>Ambient Light</h3>
-            <h4>Color</h4>
-            <div id="ambientLightColorOutput"></div>
-            <div class="colorcontainer">
-                <input type="color" value="#ffffff" id="ambientLightColor">
-            </div>
-        </div>
-        <div class="lightControl">
-            <h3>Direction Light</h3>
-            <h4>Color</h4>
-            <div id="dirLightColorOutput"></div>
-            <div class = "colorcontainer">
-                <input type="color" value="#ffffff" id="dirLightColor">
-            </div>
-            <h4>Direction</h4>
-            <div id="dirLightDirectionXOutput"></div>
-            <div class="slidecontainer">                    
-                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionX">
-            </div>
-
-            <div id="dirLightDirectionYOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionY">
-            </div>
-
-            <div id="dirLightDirectionZOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionZ">
-            </div>                
-        </div>
-        <div class="lightControl">
-            <h3>Spotlight</h3>
-            <div>
-                <input type="checkbox" class="checkbox" id="drawSpotlightObject" onchange="toggleSpotlightDraw(this)">
-                Show object in world
-            </div>
-            <h4>Color</h4>
-            <div id="spotlightColorOutput"></div>
-            <div class = "colorcontainer">
-                <input type="color" value="#ffffff" id="spotlightColor">
-            </div>
-            <h4>Width (angle of effect)</h4>
-            <div id="spotlightAngleOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="0" max="90" value="20" class="slider" id="spotlightAngle">
-            </div>
-            <h4>Position (camera relative)</h4>
-            <div id="spotlightPositionXOutput"></div>
-            <div class="slidecontainer">                    
-                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionX">
-            </div>
-
-            <div id="spotlightPositionYOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionY">
-            </div>
-
-            <div id="spotlightPositionZOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-100" max="-5" value="-10" class="slider" id="spotlightPositionZ">
-            </div>
-            <h4>Direction (Euler angles)</h4>
-            <div id="spotlightDirectionPitchOutput"></div>
-            <div class="slidecontainer">                    
-                <input type="range" min="-360" max="360" value="-30" class="slider" id="spotlightDirectionPitch">
-            </div>
-
-            <div id="spotlightDirectionYawOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-360" max="360" value="0" class="slider" id="spotlightDirectionYaw">
-            </div>
-        </div>
-        <div class="lightControl">
-            <h3>Point Light</h3>
-            <div>
-                <input type="checkbox" class="checkbox" id="drawSpotlightObject" onchange="togglePointLightDraw(this)">
-                Show object in world
-            </div>
-            <h4>Color</h4>
-            <div id="pointLightColorOutput"></div>
-            <div class = "colorcontainer">
-                <input type="color" value="#ffffff" id="pointLightColor">
-            </div>
-            <h4>Position (camera relative)</h4>
-            <div id="pointLightPositionXOutput"></div>
-            <div class="slidecontainer">                    
-                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionX">
-            </div>
-
-            <div id="pointLightPositionYOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionY">
-            </div>
-
-            <div id="pointLightPositionZOutput"></div>
-            <div class="slidecontainer">
-                <input type="range" min="-100" max="-5" value="-30" class="slider" id="pointLightPositionZ">
-            </div>
-            <h4>Distance</h4>
-            <div id="pointLightDistanceOutput"></div>
-            <div class="slidecontainer">                    
-                <input type="range" min="0" max="100" value="50" class="slider" id="pointLightDistance">
-            </div>
-        </div>
-    </div>
+    </div> 
 </div>
 </body>
 </html>

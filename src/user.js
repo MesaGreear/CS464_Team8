@@ -221,6 +221,27 @@ function loadUserInteraction() {
         while(pipes.length > pipeAmount)
             pipes.pop();
     } 
+
+    // hide/reveal details when clicked
+    document.getElementById("details").onclick = function() {
+        if(document.getElementById("deets").style.visibility == "hidden") {
+            document.getElementById("deets").style.visibility = "visible";
+            document.getElementById("deets2").style.visibility = "visible";
+            document.getElementById("details").style.width = "auto";
+            document.getElementById("details").style.height = "auto";
+            document.getElementById("details").style.backgroundImage = "";
+        }
+        else {
+            document.getElementById("deets").style.visibility = "hidden";
+            document.getElementById("deets2").style.visibility = "hidden";
+            document.getElementById("details").style.width = "30px";
+            document.getElementById("details").style.height = "30px";
+            document.getElementById("details").style.backgroundImage = "url(./icons/info.png)";
+            document.getElementById("details").style.backgroundRepeat = "no-repeat";
+            document.getElementById("details").style.backgroundSize = "cover";
+        }
+    }
+    document.getElementById("details").onclick(); // run the 'onclick()' function
 }
 
 var drawSpotlightObject = false;

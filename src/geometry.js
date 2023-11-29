@@ -12,94 +12,195 @@ var indices = [];
  * Generate a square and push its geometry data to vertices, textures, & indices.
  */
 function initSquare() {
-
     vertices.push(
         // Front face
-        -1.0, -1.0,  1.0,
-         1.0, -1.0,  1.0,
-         1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
 
         // Back face
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0, -1.0, -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        -1.0,
 
         // Top face
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-         1.0,  1.0,  1.0,
-         1.0,  1.0, -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        -1.0,
 
         // Bottom face
-        -1.0, -1.0, -1.0,
-         1.0, -1.0, -1.0,
-         1.0, -1.0,  1.0,
-        -1.0, -1.0,  1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        -1.0,
+        1.0,
 
         // Right face
-         1.0, -1.0, -1.0,
-         1.0,  1.0, -1.0,
-         1.0,  1.0,  1.0,
-         1.0, -1.0,  1.0,
+        1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
 
         // Left face
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        -1.0,  1.0, -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
+        -1.0,
+        1.0,
+        -1.0
     );
 
     // TODO: normals?
 
     textures.push(
         // Front face
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
 
         // Back face
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
-        0.0, 0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
 
         // Top face
-        0.0, 1.0,
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
 
         // Bottom face
-        1.0, 1.0,
-        0.0, 1.0,
-        0.0, 0.0,
-        1.0, 0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
 
         // Right face
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
-        0.0, 0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
 
         // Left face
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
-      );
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        1.0
+    );
 
-      var offset = (vertices.length/3) - 24;
+    var offset = vertices.length / 3 - 24;
 
-      indices.push(
-        offset + 0, offset + 1, offset + 2,      offset + 0, offset + 2, offset + 3,    // Front face
-        offset + 4, offset + 5, offset + 6,      offset + 4, offset + 6, offset + 7,    // Back face
-        offset + 8, offset + 9, offset + 10,     offset + 8, offset + 10, offset + 11,  // Top face
-        offset + 12, offset + 13, offset + 14,   offset + 12, offset + 14, offset + 15, // Bottom face
-        offset + 16, offset + 17, offset + 18,   offset + 16, offset + 18, offset + 19, // Right face
-        offset + 20, offset + 21, offset + 22,   offset + 20, offset + 22, offset + 23  // Left face
+    indices.push(
+        offset + 0,
+        offset + 1,
+        offset + 2,
+        offset + 0,
+        offset + 2,
+        offset + 3, // Front face
+        offset + 4,
+        offset + 5,
+        offset + 6,
+        offset + 4,
+        offset + 6,
+        offset + 7, // Back face
+        offset + 8,
+        offset + 9,
+        offset + 10,
+        offset + 8,
+        offset + 10,
+        offset + 11, // Top face
+        offset + 12,
+        offset + 13,
+        offset + 14,
+        offset + 12,
+        offset + 14,
+        offset + 15, // Bottom face
+        offset + 16,
+        offset + 17,
+        offset + 18,
+        offset + 16,
+        offset + 18,
+        offset + 19, // Right face
+        offset + 20,
+        offset + 21,
+        offset + 22,
+        offset + 20,
+        offset + 22,
+        offset + 23 // Left face
     );
 }
 
@@ -107,10 +208,9 @@ var SPHERE_QUALITY = 12; // quality of the sphere/smoothness
 var SPHERE_VERTICES = (SPHERE_QUALITY + 1) * (SPHERE_QUALITY + 1);
 var SPHERE_INDICES = SPHERE_QUALITY * SPHERE_QUALITY * 6;
 
-
 /**
  * Generate a sphere and push its geometry data to vertices, textures, & indices.
- * 
+ *
  * @param {Float} bump The 'bumpiness'/'spikiness' of this sphere
  */
 function initSphere(bump) {
@@ -121,43 +221,43 @@ function initSphere(bump) {
 
     // vertices
     var b;
-    for(j = 0; j <= SPHERE_QUALITY; j++) {
-        aj = j * Math.PI / SPHERE_QUALITY;
+    for (j = 0; j <= SPHERE_QUALITY; j++) {
+        aj = (j * Math.PI) / SPHERE_QUALITY;
         sj = Math.sin(aj);
         cj = Math.cos(aj);
-        for(i = 0; i <= SPHERE_QUALITY; i++) {
-            ai = i * 2 * Math.PI / SPHERE_QUALITY;
+        for (i = 0; i <= SPHERE_QUALITY; i++) {
+            ai = (i * 2 * Math.PI) / SPHERE_QUALITY;
             si = Math.sin(ai);
             ci = Math.cos(ai);
 
             // calculate the 'added bumpiness' of this vertex
             b = 1.0 + (i % 2 == 0 && j % 2 == 1 ? bump : -bump);
 
-            vertices.push(si * sj * b, // X
-                          cj * b,       // Y
-                          ci * sj * b); // Z
+            vertices.push(
+                si * sj * b, // X
+                cj * b, // Y
+                ci * sj * b
+            ); // Z
 
-            normals.push(si * sj * b,  
-                         cj * b,       
-                         ci * sj * b); 
+            normals.push(si * sj * b, cj * b, ci * sj * b);
 
-            textures.push(i/SPHERE_QUALITY, j/SPHERE_QUALITY);
+            textures.push(i / SPHERE_QUALITY, j / SPHERE_QUALITY);
         }
     }
 
     //TODO: normals?
 
     // indices
-    var offset = (vertices.length/3) - SPHERE_VERTICES;
+    var offset = vertices.length / 3 - SPHERE_VERTICES;
     for (j = 0; j < SPHERE_QUALITY; j++) {
         for (i = 0; i < SPHERE_QUALITY; i++) {
-          p1 = offset + (j * (SPHERE_QUALITY+1) + i);
-          p2 = (p1 + (SPHERE_QUALITY+1));
+            p1 = offset + (j * (SPHERE_QUALITY + 1) + i);
+            p2 = p1 + (SPHERE_QUALITY + 1);
 
-          indices.push(p1, p2, p1 + 1);
-          indices.push(p1 + 1, p2, p2 + 1);
+            indices.push(p1, p2, p1 + 1);
+            indices.push(p1 + 1, p2, p2 + 1);
         }
-      }
+    }
 }
 
 var CYLINDER_QUALITY = 15;
@@ -173,10 +273,10 @@ var RADIUS = 1;
 function initCylinder() {
     // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
 
-    var sectorStep = 2 * Math.PI/CYLINDER_QUALITY;
+    var sectorStep = (2 * Math.PI) / CYLINDER_QUALITY;
     var unitVertices = [];
 
-    for(i = 0; i <= CYLINDER_QUALITY; i++) {
+    for (i = 0; i <= CYLINDER_QUALITY; i++) {
         var sectorAngle = i * sectorStep;
         unitVertices.push(Math.cos(sectorAngle));
         unitVertices.push(Math.sin(sectorAngle));
@@ -184,14 +284,14 @@ function initCylinder() {
     }
 
     // vertices & textures
-    for(i = 0; i < 2; i++) {
-        var h = -HEIGHT/2.0 + i * HEIGHT;
+    for (i = 0; i < 2; i++) {
+        var h = -HEIGHT / 2.0 + i * HEIGHT;
         var t = 1.0 - i;
 
-        for(j = 0, k = 0; j <= CYLINDER_QUALITY; j++, k+=3) {
+        for (j = 0, k = 0; j <= CYLINDER_QUALITY; j++, k += 3) {
             var ux = unitVertices[k];
-            var uy = unitVertices[k+1];
-            var uz = unitVertices[k+2];
+            var uy = unitVertices[k + 1];
+            var uz = unitVertices[k + 2];
 
             var cx = ux * RADIUS;
             var cy = uy * RADIUS;
@@ -201,31 +301,33 @@ function initCylinder() {
 
             normals.push(ux, uy, uz);
 
-            textures.push((j * 1.0)/CYLINDER_QUALITY, t);
+            textures.push((j * 1.0) / CYLINDER_QUALITY, t);
         }
     }
 
     // indices
     var k1 = 0;
     var k2 = CYLINDER_QUALITY + 1;
-    var offset = (vertices.length/3) - CYLINDER_VERTICES;
-    for(i = 0; i < CYLINDER_QUALITY; i++, k1++, k2++) {
+    var offset = vertices.length / 3 - CYLINDER_VERTICES;
+    for (i = 0; i < CYLINDER_QUALITY; i++, k1++, k2++) {
         indices.push(offset + k1, offset + k1 + 1, offset + k2);
         indices.push(offset + k2, offset + k1 + 1, offset + k2 + 1);
     }
-
-
 }
 
 /**
  * Empty the vertices, textures, and indices arrays in preparation of new geometry data */
-function clearArrs() { vertices.length = 0; normals.length = 0; textures.length = 0; indices.length = 0; }
+function clearArrs() {
+    vertices.length = 0;
+    normals.length = 0;
+    textures.length = 0;
+    indices.length = 0;
+}
 
 /**
  * Initialize the scene's geometry data and buffers.
  */
-function initGeometry()
-{
+function initGeometry() {
     // initialize a square and insert it into shapes at index 0
     initSquare();
     shapes.push(null);

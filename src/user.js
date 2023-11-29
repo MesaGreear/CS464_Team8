@@ -186,11 +186,21 @@ function loadPointLightInteraction() {
     }
 }
 
+function loadProjectionOptionsInteraction() {
+    var fovSlider = document.getElementById("fov");
+    var fovOutput = document.getElementById("fovOutput");
+    fovOutput.innerHTML = "FOV: " + fovSlider.value + "\u00B0";
+    fovSlider.oninput = function() {
+        fovOutput.innerHTML = "FOV: " + fovSlider.value + "\u00B0";
+    }
+}
+
 function loadUserInteraction() {
     loadAmbientLightInteraction();
     loadDirectionLightInteraction();
     loadSpotlightInteraction();
     loadPointLightInteraction();
+    loadProjectionOptionsInteraction();
     
     // SPOTLIGHT CONTROLS -------------------------------------------------------------------------
 

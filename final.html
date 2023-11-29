@@ -203,7 +203,22 @@
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 3px">       
+            <div style="display: flex; flex-direction: column; gap: 3px">     
+                <div class="lightControl">
+                    <h4>Projection Options</h4>
+                    <div id="fovOutput"></div>
+                    <div class="slidecontainer">
+                        <input type="range" min="15" max="90" value="45" class="slider" id="fov">
+                    </div>
+                    <div>
+                        <input type="checkbox" class="checkbox" id="useOrthographicProjection">
+                        Use orthographic projection
+                    </div>
+                    <div>
+                        <input type="checkbox" class="checkbox" id="useLookAtMatrix">
+                        Use lookAt matrix
+                    </div>
+                </div>  
                 <div class="lightControl">
                     <h3>Ambient Light</h3>
                     <h4>Color</h4>
@@ -222,17 +237,17 @@
                     <h4>Direction</h4>
                     <div id="dirLightDirectionXOutput"></div>
                     <div class="slidecontainer">                    
-                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionX">
+                        <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionX">
                     </div>
         
                     <div id="dirLightDirectionYOutput"></div>
                     <div class="slidecontainer">
-                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionY">
+                        <input type="range" min="-100" max="100" value="-100" class="slider" id="dirLightDirectionY">
                     </div>
         
                     <div id="dirLightDirectionZOutput"></div>
                     <div class="slidecontainer">
-                        <input type="range" min="-100" max="100" value="0" class="slider" id="dirLightDirectionZ">
+                        <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionZ">
                     </div>                
                 </div>
                 <div class="lightControl">

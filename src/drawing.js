@@ -7,21 +7,53 @@ var draws;
 var binds;
 var vertices;
 
+var useOrthographicProjection;
+
+function generateOrthographicProjectionMatrix() {
+    var bound = 100 * gl.viewportWidth;
+    var top = bound/2 / gl.viewportWidth;
+    var right = bound/2 / gl.viewportHeight;
+    var far = bound*2;
+    var bottom = -1 * top;
+    var left = -1 * right;
+    var near = 0;
+    var orthoMatrix = mat4.ortho(left,right,bottom,top,near,far,orthoMatrix);
+    return orthoMatrix;
+}
+
 /**
  * Draw the scene. Uses draw() to draw objects to the scene and performs the
  * operations required to draw coherent scenes.
  */
 function drawScene() {
+    var canvas = document.getElementById("hellowebgl");
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    gl.viewportWidth = canvas.width;
+    gl.viewportHeight = canvas.height;
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    var fov = document.getElementById("fov").value;
+
     // set perspective matrix
     var pMatrix = mat4.create();
-    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
+    mat4.perspective(fov, gl.viewportWidth / gl.viewportHeight, 0.1, 2000.0, pMatrix);
     stack = new MStack();
     stack.save();
-    stack.rotateX(25);
-    stack.rotateY(45);
+
+    useOrthographicProjection = document.getElementById("useOrthographicProjection").checked;
+    if (useOrthographicProjection) { pMatrix = generateOrthographicProjectionMatrix(); }    
+
+    var useLookAtMatrix = document.getElementById("useLookAtMatrix").checked;
+    if (useLookAtMatrix) {
+        var lookAtMatrix = mat4.lookAt([0,0,0],[45,-25,-45],[0,1,0]);
+        stack.setMatrix(lookAtMatrix);
+    } else {
+        stack.rotateX(25);
+        stack.rotateY(45);
+    }
+    
 
     //Get ambient light color from user input
     var ambientLightColor = hexToRGB(document.getElementById("ambientLightColor").value);

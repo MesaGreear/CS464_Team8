@@ -44,7 +44,7 @@ class SpotLight {
         this.limit = Math.cos(
             (parseFloat(document.getElementById("spotlightAngle").value) * Math.PI) / 180
         );
-        var rotationMatrix = mat4.create();
+        var rotationMatrix = mat4.identity(mat4.create());
         rotationMatrix = mat4.rotate(rotationMatrix, (-this.yaw / 180.0) * Math.PI, [0,1,0]);
         rotationMatrix = mat4.rotate(rotationMatrix, (this.pitch / 180.0) * Math.PI, [1,0,0]);
         this.direction = mat4.multiplyVec3(rotationMatrix, [0.0, 0.0, 1.0]);

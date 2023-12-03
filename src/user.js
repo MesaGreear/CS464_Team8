@@ -57,17 +57,17 @@ var fullScreen = false;
 
 document.addEventListener("keydown", (e) => {
     switch (e.key) {
-        case "f":
-            fullScreen = !fullScreen;
-            var canvas = document.querySelector("#hellowebgl");
-            if (fullScreen) {
-                canvas.style.width = "90vw";
-                canvas.style.height = "100vh";
-            } else {
-                canvas.style.width = "640px";
-                canvas.style.height = "480px";
-            }
-            break;
+        // case "f":
+        //     fullScreen = !fullScreen;
+        //     var canvas = document.querySelector("#hellowebgl");
+        //     if (fullScreen) {
+        //         canvas.style.width = "90vw";
+        //         canvas.style.height = "100vh";
+        //     } else {
+        //         canvas.style.width = "640px";
+        //         canvas.style.height = "480px";
+        //     }
+        //     break;
     }
 });
 
@@ -336,7 +336,23 @@ function loadUserInteraction() {
         }
     };
     document.getElementById("details").onclick(); // run the 'onclick()' function
+
+    // run onclick function for all the UI controls (collapse them all) except for the 'General' controls
+    Array.from(document.getElementsByClassName("UISectionTitle")).forEach((elem) => {
+        elem.onclick();
+    });
+    document.getElementById("UIGeneral").style.display = "block";
 }
+
+/**
+ * Toggle the collapsed stated of the given HTML element
+ * 
+ * @param {String} id The ID of the HTML element to collapse or expand
+ */
+function collapse(id) {
+    document.getElementById(id).style.display = (document.getElementById(id).style.display == "none" ? "block" : "none");
+}
+
 
 /** Line Mode flag */
 var lineMode = false;
@@ -366,7 +382,7 @@ function updateDetails() {
     // display the number of draw calls, how many times the buffers were rebinded, and the total number of vertices in the scene
     document.getElementById(
         "deets2"
-    ).innerHTML = `Draw() Calls: ${draws} <br> Vertex Count: ${vertices} <br> UPS: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ${Math.floor(
-        ups
+    ).innerHTML = `Draw() Calls: ${draws} <br> Vertex Count: ${vertices} <br> FPS: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ${Math.floor(
+        fps
     )}`;
 }

@@ -3,6 +3,7 @@
 var gl;
 
 function initWebGLContext(aname) {
+    console.log("Initializing WebGL context");
     gl = null;
     var canvas = document.getElementById(aname);
     try {
@@ -304,11 +305,11 @@ function startHelloWebGL() {
 
 var lastTime = 0;
 
-/* Calculating 'Updates Per Second' stuff */
+/* Calculating 'Frames Per Second' stuff */
 var iter = 0;
-var UPS_ITERATIONS = 100.0;
-var upsCalc = 0;
-var ups = 0;
+var FPS_ITERATIONS = 100.0;
+var fpsCalc = 0;
+var fps = 0;
 
 function animate() {
     var timeNow = new Date().getTime();
@@ -316,11 +317,11 @@ function animate() {
     if (lastTime != 0) {
         iter++;
         var elapsed = timeNow - lastTime;
-        upsCalc += 1000.0 / elapsed / UPS_ITERATIONS;
-        if (iter % UPS_ITERATIONS == 0) {
+        fpsCalc += 1000.0 / elapsed / FPS_ITERATIONS;
+        if (iter % FPS_ITERATIONS == 0) {
             iter = 0;
-            ups = upsCalc;
-            upsCalc = 0;
+            fps = fpsCalc;
+            fpsCalc = 0;
         }
     }
     lastTime = timeNow;

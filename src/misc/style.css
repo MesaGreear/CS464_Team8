@@ -29,9 +29,30 @@ body {
 }
 
 .UISectionControls {
-    padding: 15px 5px 15px 5px;
-    background-color: rgb(148, 160, 175);
+    padding: 0px 5px 0px 5px;
+    background-color: rgb(145, 160, 175);
     display: none;
+}
+
+.UISubSection {
+    margin: 5px 0px 20px 0px;
+    padding: 5px 3px 5px 3px;
+    background-color: rgb(165, 175, 200);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+/* Options inside a UI section styling */
+.options {
+    display: flex;
+    flex-direction: column;
+}
+
+.options h4{
+    margin: 0px;
+    margin-bottom: 3px;
 }
 
 
@@ -112,18 +133,6 @@ body {
     -ms-transform: translateX(26px);
     transform: translateX(26px);
   }
-
-
-  /* Options inside a UI section styling */
-.options {
-    display: flex;
-    flex-direction: column;
-}
-
-.options_text{
-    margin: 0px;
-    margin-bottom: 3px;
-}
 
 /* .lightControl{
     padding: 3px;

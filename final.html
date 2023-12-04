@@ -122,7 +122,7 @@
     }
 
     */
-    
+
 </script>
 
 </head>
@@ -172,41 +172,46 @@
                 </div>
 
                 <div class="UISectionControls" id="UIGeneral">
-                    <div>
-                        <h4 style="margin-bottom: 5px;">Speed</h4>
-                        <div id="speedOutput"></div>
-                        <div class="slidecontainer">
-                            <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Speed</h4>
+                            <div id="speedOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="10" max="300" value="100" step="10" class="slider" id="speed">
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <h4 style="margin-bottom: 5px;">Max Pipe Length</h4>
-                        <div id="lengthOutput"></div>
-                        <div class="slidecontainer">
-                            <input type="range" min="1" max="500" value="25" class="slider" id="length">
-                        </div>
-                    </div>
-                    <div>
-                        <h4 style="margin-bottom: 5px;">Number of Pipes</h4>
-                        <div id="pipeOutput"></div>
-                        <div class="slidecontainer">
-                            <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
-                        </div>
-                    </div>
-                    <br>
 
-                    <div class="options">
-                        <h4 class="options_text">Line Mode</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="line" onchange="toggleLine(this)">
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Max Pipe Length</h4>
+                            <div id="lengthOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="1" max="500" value="25" class="slider" id="length">
+                            </div>
+                        </div>
+                        <div class="options">
+                            <h4>Number of Pipes</h4>
+                            <div id="pipeOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="1" max="5" value="1" step="1" class="slider" id="pipe">
+                            </div>
+                        </div>
                     </div>
-                      
 
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Line Mode</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="line" onchange="toggleLine(this)">
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
+                      </div>
                 </div>
             </div>
+
 
             <div class="UISection">
                 <div class="UISectionTitle" onclick="collapse('UIProjection')"> 
@@ -214,27 +219,33 @@
                 </div>
 
                 <div class="UISectionControls" id="UIProjection">
-                    <div id="fovOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="15" max="90" value="45" class="slider" id="fov">
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>FOV</h4>
+                            <div id="fovOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="15" max="90" value="45" class="slider" id="fov">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="options">
-                        <h4 class="options_text">Use orthographic projection</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="useOrthographicProjection">
-                            <span class="sliderSwitch"></span>
-                        </label>
-                    </div>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4 class="options_text">Use orthographic projection</h4>
+                            <label class="switch">
+                                <input type="checkbox" id="useOrthographicProjection">
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
 
-                    <div class="options">
-                        <h4 class="options_text">Use lookAt matrix</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="useLookAtMatrix">
-                            <span class="sliderSwitch"></span>
-                        </label>
+                        <div class="options">
+                            <h4 class="options_text">Use lookAt matrix</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="useLookAtMatrix">
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,22 +258,29 @@
 
                 <div class="UISectionControls" id="UIAmbient">
 
-                    <div class="options">
-                        <h4 class="options_text">Use Ambient Lighting</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="toggleAmbient" checked>
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4 class="options_text">Use Ambient Lighting</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="toggleAmbient" checked>
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
                     </div>
 
-                    <h4>Color</h4>
-                    <div id="ambientLightColorOutput"></div>
-                    <div class="colorcontainer">
-                        <input type="color" value="#ffffff" id="ambientLightColor">
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Color</h4>
+                            <div id="ambientLightColorOutput"></div>
+                            <div class="colorcontainer">
+                                <input type="color" value="#ffffff" id="ambientLightColor">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             <div class="UISection">
                 <div class="UISectionTitle" onclick="collapse('UIDirectional')"> 
@@ -270,37 +288,49 @@
                 </div>
 
                 <div class="UISectionControls" id="UIDirectional">
-                    <div class="options">
-                        <h4 class="options_text">Use Directional Lighting</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="toggleDirectional" checked>
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4 class="options_text">Use Directional Lighting</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="toggleDirectional" checked>
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
                     </div>
 
-                    <h4>Color</h4>
-                    <div id="dirLightColorOutput"></div>
-                    <div class = "colorcontainer">
-                        <input type="color" value="#ffffff" id="dirLightColor">
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Color</h4>
+                            <div id="dirLightColorOutput"></div>
+                            <div class = "colorcontainer">
+                                <input type="color" value="#ffffff" id="dirLightColor">
+                            </div>
+                        </div>
                     </div>
-                    <h4>Direction</h4>
-                    <div id="dirLightDirectionXOutput"></div>
-                    <div class="slidecontainer">                    
-                        <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionX">
+
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Direction</h4>
+                            <div id="dirLightDirectionXOutput"></div>
+                            <div class="slidecontainer">                    
+                                <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionX">
+                            </div>
+                
+                            <div id="dirLightDirectionYOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-100" max="100" value="-100" class="slider" id="dirLightDirectionY">
+                            </div>
+                
+                            <div id="dirLightDirectionZOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionZ">
+                            </div>
+                        </div>
                     </div>
-        
-                    <div id="dirLightDirectionYOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-100" max="100" value="-100" class="slider" id="dirLightDirectionY">
-                    </div>
-        
-                    <div id="dirLightDirectionZOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-100" max="100" value="100" class="slider" id="dirLightDirectionZ">
-                    </div>           
                 </div>
             </div>
+
 
             <div class="UISection">
                 <div class="UISectionTitle" onclick="collapse('UISpot')"> 
@@ -308,61 +338,83 @@
                 </div>
 
                 <div class="UISectionControls" id="UISpot">
-                    <div class="options">
-                        <h4 class="options_text">Use Spotlight Lighting</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="toggleSpot" checked>
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4 class="options_text">Use Spotlight Lighting</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="toggleSpot" checked>
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
+
+                        <div class="options">
+                            <h4 class="options_text">Show object in world</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="drawSpotlightObject">
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="options">
-                        <h4 class="options_text">Show object in world</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="drawSpotlightObject">
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Color</h4>
+                            <div id="spotlightColorOutput"></div>
+                            <div class = "colorcontainer">
+                                <input type="color" value="#ffffff" id="spotlightColor">
+                            </div>
+                        </div>
                     </div>
 
-                    <h4>Color</h4>
-                    <div id="spotlightColorOutput"></div>
-                    <div class = "colorcontainer">
-                        <input type="color" value="#ffffff" id="spotlightColor">
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Position (camera relative)</h4>
+                            <div id="spotlightPositionXOutput"></div>
+                            <div class="slidecontainer">                    
+                                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionX">
+                            </div>
+                
+                            <div id="spotlightPositionYOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionY">
+                            </div>
+                
+                            <div id="spotlightPositionZOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-100" max="-5" value="-10" class="slider" id="spotlightPositionZ">
+                            </div>
+                        </div>
                     </div>
-                    <h4>Width (angle of effect)</h4>
-                    <div id="spotlightAngleOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="0" max="90" value="20" class="slider" id="spotlightAngle">
+
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Width (angle of effect)</h4>
+                            <div id="spotlightAngleOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="0" max="90" value="20" class="slider" id="spotlightAngle">
+                            </div>
+                        </div>
                     </div>
-                    <h4>Position (camera relative)</h4>
-                    <div id="spotlightPositionXOutput"></div>
-                    <div class="slidecontainer">                    
-                        <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionX">
-                    </div>
-        
-                    <div id="spotlightPositionYOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-50" max="50" value="0" class="slider" id="spotlightPositionY">
-                    </div>
-        
-                    <div id="spotlightPositionZOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-100" max="-5" value="-10" class="slider" id="spotlightPositionZ">
-                    </div>
-                    <h4>Direction (Euler angles)</h4>
-                    <div id="spotlightDirectionPitchOutput"></div>
-                    <div class="slidecontainer">                    
-                        <input type="range" min="-360" max="360" value="-30" class="slider" id="spotlightDirectionPitch">
-                    </div>
-        
-                    <div id="spotlightDirectionYawOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-360" max="360" value="0" class="slider" id="spotlightDirectionYaw">
+
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Direction (Euler angles)</h4>
+                            <div id="spotlightDirectionPitchOutput"></div>
+                            <div class="slidecontainer">                    
+                                <input type="range" min="-360" max="360" value="-30" class="slider" id="spotlightDirectionPitch">
+                            </div>
+                
+                            <div id="spotlightDirectionYawOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-360" max="360" value="0" class="slider" id="spotlightDirectionYaw">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             <div class="UISection">
                 <div class="UISectionTitle" onclick="collapse('UIPoint')"> 
@@ -370,48 +422,64 @@
                 </div>
 
                 <div class="UISectionControls" id="UIPoint">
-                    <div class="options">
-                        <h4 class="options_text">Use Point-light Lighting</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="togglePoint" checked>
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4 class="options_text">Use Point-light Lighting</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="togglePoint" checked>
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
+
+                        <div class="options">
+                            <h4 class="options_text">Show object in world</h4>
+                        
+                            <label class="switch">
+                                <input type="checkbox" id="drawPointLightObject">
+                                <span class="sliderSwitch"></span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="options">
-                        <h4 class="options_text">Show object in world</h4>
-                    
-                        <label class="switch">
-                            <input type="checkbox" id="drawPointLightObject">
-                            <span class="sliderSwitch"></span>
-                        </label>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Color</h4>
+                            <div id="pointLightColorOutput"></div>
+                            <div class = "colorcontainer">
+                                <input type="color" value="#ffffff" id="pointLightColor">
+                            </div>
+                        </div>
                     </div>
 
-                    <h4>Color</h4>
-                    <div id="pointLightColorOutput"></div>
-                    <div class = "colorcontainer">
-                        <input type="color" value="#ffffff" id="pointLightColor">
-                    </div>
-                    <h4>Position (camera relative)</h4>
-                    <div id="pointLightPositionXOutput"></div>
-                    <div class="slidecontainer">                    
-                        <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionX">
-                    </div>
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Position (camera relative)</h4>
+                            <div id="pointLightPositionXOutput"></div>
+                            <div class="slidecontainer">                    
+                                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionX">
+                            </div>
         
-                    <div id="pointLightPositionYOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionY">
+                            <div id="pointLightPositionYOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-50" max="50" value="5" class="slider" id="pointLightPositionY">
+                            </div>
+                
+                            <div id="pointLightPositionZOutput"></div>
+                            <div class="slidecontainer">
+                                <input type="range" min="-100" max="-5" value="-30" class="slider" id="pointLightPositionZ">
+                            </div>
+                        </div>
                     </div>
-        
-                    <div id="pointLightPositionZOutput"></div>
-                    <div class="slidecontainer">
-                        <input type="range" min="-100" max="-5" value="-30" class="slider" id="pointLightPositionZ">
-                    </div>
-                    <h4>Distance</h4>
-                    <div id="pointLightDistanceOutput"></div>
-                    <div class="slidecontainer">                    
-                        <input type="range" min="0" max="100" value="50" class="slider" id="pointLightDistance">
+
+                    <div class="UISubSection">
+                        <div class="options">
+                            <h4>Distance</h4>
+                            <div id="pointLightDistanceOutput"></div>
+                            <div class="slidecontainer">                    
+                                <input type="range" min="0" max="100" value="50" class="slider" id="pointLightDistance">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

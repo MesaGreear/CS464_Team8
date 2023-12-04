@@ -5,7 +5,6 @@
 	<title>Team 8 Final Project</title>
 	<meta name="generator" content="BBEdit 10.5" />
 
-<!-- load matrix manipulation helper methods -->	
 <script type="text/javascript" src="/src/misc/glMatrix_util.js"></script>
 <script type="text/javascript" src="/src/misc/webgl-utils.js"></script>
 <script type="text/javascript" src="/src/geometry.js"></script>
@@ -25,6 +24,8 @@
     // =================================================================================
     //                              FRAGMENT SHADER
     // =================================================================================
+
+    /*
 
     precision mediump float;
 
@@ -55,12 +56,16 @@
 
         
     }
+
+    */
 </script>
 
 <script id="shader-vs" type="x-shader/x-vertex">
     // =================================================================================
     //                              VERTEX SHADER
     // =================================================================================
+
+    /*
 
     attribute vec3 aVertexPosition;
     attribute vec3 aVertexNormal;
@@ -115,6 +120,9 @@
         
         
     }
+
+    */
+    
 </script>
 
 </head>
@@ -186,12 +194,17 @@
                         </div>
                     </div>
                     <br>
+
                     <div class="options">
-                        <div class="checkcontainer">
-                            <input type="checkbox" class="checkbox" id="line" onchange="toggleLine(this)">
-                        </div>
                         <h4 class="options_text">Line Mode</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="line" onchange="toggleLine(this)">
+                            <span class="sliderSwitch"></span>
+                        </label>
                     </div>
+                      
+
                 </div>
             </div>
 
@@ -205,13 +218,23 @@
                     <div class="slidecontainer">
                         <input type="range" min="15" max="90" value="45" class="slider" id="fov">
                     </div>
-                    <div>
-                        <input type="checkbox" class="checkbox" id="useOrthographicProjection">
-                        Use orthographic projection
+
+                    <div class="options">
+                        <h4 class="options_text">Use orthographic projection</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="useOrthographicProjection">
+                            <span class="sliderSwitch"></span>
+                        </label>
                     </div>
-                    <div>
-                        <input type="checkbox" class="checkbox" id="useLookAtMatrix">
-                        Use lookAt matrix
+
+                    <div class="options">
+                        <h4 class="options_text">Use lookAt matrix</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="useLookAtMatrix">
+                            <span class="sliderSwitch"></span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -223,6 +246,16 @@
                 </div>
 
                 <div class="UISectionControls" id="UIAmbient">
+
+                    <div class="options">
+                        <h4 class="options_text">Use Ambient Lighting</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="toggleAmbient" checked>
+                            <span class="sliderSwitch"></span>
+                        </label>
+                    </div>
+
                     <h4>Color</h4>
                     <div id="ambientLightColorOutput"></div>
                     <div class="colorcontainer">
@@ -237,6 +270,15 @@
                 </div>
 
                 <div class="UISectionControls" id="UIDirectional">
+                    <div class="options">
+                        <h4 class="options_text">Use Directional Lighting</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="toggleDirectional" checked>
+                            <span class="sliderSwitch"></span>
+                        </label>
+                    </div>
+
                     <h4>Color</h4>
                     <div id="dirLightColorOutput"></div>
                     <div class = "colorcontainer">
@@ -266,10 +308,24 @@
                 </div>
 
                 <div class="UISectionControls" id="UISpot">
-                    <div>
-                        <input type="checkbox" class="checkbox" id="drawSpotlightObject">
-                        Show object in world
+                    <div class="options">
+                        <h4 class="options_text">Use Spotlight Lighting</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="toggleSpot" checked>
+                            <span class="sliderSwitch"></span>
+                        </label>
                     </div>
+
+                    <div class="options">
+                        <h4 class="options_text">Show object in world</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="drawSpotlightObject">
+                            <span class="sliderSwitch"></span>
+                        </label>
+                    </div>
+
                     <h4>Color</h4>
                     <div id="spotlightColorOutput"></div>
                     <div class = "colorcontainer">
@@ -314,10 +370,24 @@
                 </div>
 
                 <div class="UISectionControls" id="UIPoint">
-                    <div>
-                        <input type="checkbox" class="checkbox" id="drawPointLightObject">
-                        Show object in world
+                    <div class="options">
+                        <h4 class="options_text">Use Point-light Lighting</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="togglePoint" checked>
+                            <span class="sliderSwitch"></span>
+                        </label>
                     </div>
+
+                    <div class="options">
+                        <h4 class="options_text">Show object in world</h4>
+                    
+                        <label class="switch">
+                            <input type="checkbox" id="drawPointLightObject">
+                            <span class="sliderSwitch"></span>
+                        </label>
+                    </div>
+
                     <h4>Color</h4>
                     <div id="pointLightColorOutput"></div>
                     <div class = "colorcontainer">

@@ -162,9 +162,17 @@ function initShaders() {
         shaderProgram,
         "uUseLighting"
     );
+    shaderProgram.ambientEnabledUniform = gl.getUniformLocation(
+        shaderProgram,
+        "uAmbientEnabled"
+    );
     shaderProgram.ambientColorUniform = gl.getUniformLocation(
         shaderProgram,
         "uAmbientColor"
+    );
+    shaderProgram.dirEnabledUniform = gl.getUniformLocation(
+        shaderProgram,
+        "uDirLightEnabled"
     );
     shaderProgram.dirLightDirectionUniform = gl.getUniformLocation(
         shaderProgram,
@@ -173,6 +181,10 @@ function initShaders() {
     shaderProgram.dirLightColorUniform = gl.getUniformLocation(
         shaderProgram,
         "uDirLightColor"
+    );
+    shaderProgram.spotlightEnabledUniform = gl.getUniformLocation(
+        shaderProgram,
+        "uSpotLightEnabled"
     );
     shaderProgram.spotlightColorUniform = gl.getUniformLocation(
         shaderProgram,
@@ -189,6 +201,10 @@ function initShaders() {
     shaderProgram.spotlightLimitUniform = gl.getUniformLocation(
         shaderProgram,
         "uSpotlightLimit"
+    );
+    shaderProgram.pointlightEnabledUniform = gl.getUniformLocation(
+        shaderProgram,
+        "uPointLightEnabled"
     );
     shaderProgram.pointLightColorUniform = gl.getUniformLocation(
         shaderProgram,

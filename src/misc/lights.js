@@ -1,17 +1,20 @@
 class AmbientLight {
     constructor() {
+        this.enabled = document.getElementById("toggleAmbient").checked;
         this.color = hexToRGB(
             document.getElementById("ambientLightColor").value
         );
     }
 
     setUniforms(gl, shaderProgram) {
+        gl.uniform1i(shaderProgram.ambientEnabledUniform, this.enabled);
         gl.uniform3fv(shaderProgram.ambientColorUniform, this.color);
     }
 }
 
 class DirectionalLight {
     constructor() {
+        this.enabled = document.getElementById("toggleDirectional").checked;
         this.direction = [
             parseFloat(document.getElementById("dirLightDirectionX").value),
             parseFloat(document.getElementById("dirLightDirectionY").value),
@@ -24,6 +27,7 @@ class DirectionalLight {
     }
 
     setUniforms(gl, shaderProgram) {
+        gl.uniform1i(shaderProgram.dirEnabledUniform, this.enabled);
         gl.uniform3fv(shaderProgram.dirLightDirectionUniform, this.direction);
         gl.uniform3fv(shaderProgram.dirLightColorUniform, this.color);
     }
@@ -31,6 +35,7 @@ class DirectionalLight {
 
 class SpotLight {
     constructor() {
+        this.enabled = document.getElementById("toggleSpot").checked;
         this.color = hexToRGB(
             document.getElementById("spotlightColor").value
         );
@@ -53,6 +58,7 @@ class SpotLight {
     }
 
     setUniforms(gl, shaderProgram) {
+        gl.uniform1i(shaderProgram.spotlightEnabledUniform, this.enabled);
         gl.uniform3fv(shaderProgram.spotlightColorUniform, this.color);
         gl.uniform3fv(shaderProgram.spotlightPositionUniform, this.position);
         gl.uniform3fv(shaderProgram.spotlightDirectionUniform, this.direction);
@@ -62,6 +68,7 @@ class SpotLight {
 
 class PointLight {
     constructor() {
+        this.enabled = document.getElementById("togglePoint").checked;
         this.color = hexToRGB(
             document.getElementById("pointLightColor").value
         );
@@ -75,6 +82,7 @@ class PointLight {
     }
 
     setUniforms(gl, shaderProgram) {
+        gl.uniform1i(shaderProgram.pointlightEnabledUniform, this.enabled);
         gl.uniform3fv(shaderProgram.pointLightColorUniform, this.color);
         gl.uniform3fv(shaderProgram.pointLightPositionUniform, this.position);
         gl.uniform1f(shaderProgram.pointLightDistanceUniform, this.distance);

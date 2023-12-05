@@ -136,7 +136,7 @@ function loadDirectionLightInteraction() {
 }
 
 function loadSpotlightInteraction() {
-    var spotlightColorPicker = document.getElementById("pointLightColor");
+    var spotlightColorPicker = document.getElementById("spotlightColor");
     var spotlightColorOutput = document.getElementById("spotlightColorOutput");
     spotlightColorOutput.innerHTML = spotlightColorPicker.value;
     spotlightColorPicker.oninput = function () {

@@ -309,7 +309,7 @@ function loadUserInteraction() {
 
         // initialize new pipes till number of pipes on canvas match pipes
         while (pipes.length < pipeAmount)
-            pipes.push(new Pipe(coloredTexs[pipes.length]));
+            pipes.push(new Pipe(coloredTexs[pipes.length], [[0, 90], [-50, 0], [-90, 0]], [5, 25]));
 
         // pop/remove any extra pipes till number of pipes on canvas match pipes
         while (pipes.length > pipeAmount) pipes.pop();

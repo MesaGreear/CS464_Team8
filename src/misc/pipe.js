@@ -9,13 +9,18 @@ class Pipe {
      * Constructor: Initialize a pipe (just a sphere starting out) at a random coordinate. The
      * section length and direction will be randomly determined.
      *
-     * @param {GL_TEXTURE_2D} tex The texture of this pipe
+     * @param {GL_TEXTURE_2D} tex    The texture of this pipe
+     * @param {int[][]}       bounds The X, Y, & Z coordinates that create the bounding box of
+     *                               this pipe
+     * @param {int[]}         minmax The min & max length of a pipe section
      */
-    constructor(tex) {
+    constructor(tex, bounds, minmax) {
         this.queue = [];
+        this.bounds = bounds;
+        this.minmax = minmax;
         this.queue.push(
             new PipeSegment(
-                [randInt(10, 80), randInt(-40, -10), randInt(-80, -10)],
+                [randInt(bounds[0][0], bounds[0][1]), randInt(bounds[1][0], bounds[1][1]), randInt(bounds[2][0], bounds[2][1])],
                 1,
                 0
             )
@@ -58,22 +63,22 @@ class Pipe {
                 this.dir = dirs[Math.floor(Math.random() * 4)];
                 switch (this.dir) {
                     case 0:
-                        inBounds = currPos[0] - this.length > 0;
+                        inBounds = currPos[0] - this.length > this.bounds[0][0];
                         break;
                     case 1:
-                        inBounds = currPos[0] + this.length < 90;
+                        inBounds = currPos[0] + this.length < this.bounds[0][1];
                         break;
                     case 2:
-                        inBounds = currPos[1] - this.length > -50;
+                        inBounds = currPos[1] - this.length > this.bounds[1][0];
                         break;
                     case 3:
-                        inBounds = currPos[1] + this.length < 0;
+                        inBounds = currPos[1] + this.length < this.bounds[1][1];
                         break;
                     case 4:
-                        inBounds = currPos[2] - this.length > -90;
+                        inBounds = currPos[2] - this.length > this.bounds[2][0];
                         break;
                     case 5:
-                        inBounds = currPos[2] + this.length < 0;
+                        inBounds = currPos[2] + this.length < this.bounds[2][1];
                 }
             }
         }

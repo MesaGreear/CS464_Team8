@@ -66,12 +66,38 @@ class SpotLight {
     }
 }
 
+var pointPipe;
+
 class PointLight {
     constructor() {
         this.enabled = document.getElementById("togglePoint").checked;
         this.color = hexToRGB(
             document.getElementById("pointLightColor").value
         );
+
+        // if a pointPipe has not been created yet, create one (This is the 'AI' for pointlight's auto-move)
+        if(!pointPipe)
+            pointPipe = new Pipe(null, [[-50, 50], [-50, 50], [-100, -5]], [10, 40]);
+
+        // if auto-move is checked, then every 3rd frame update it's position
+        if(document.getElementById("autoPointLightObject").checked && totalF % 3 == 0) {
+            pointPipe.getLastSegment().coord = [
+                parseFloat(document.getElementById("pointLightPositionX").value),
+                parseFloat(document.getElementById("pointLightPositionY").value),
+                parseFloat(document.getElementById("pointLightPositionZ").value),
+            ];
+            pointPipe.addSegment();
+            pointPipe.trimSegments(1);
+            var coord = pointPipe.getLastSegment().coord;
+            document.getElementById("pointLightPositionX").value = coord[0];
+            document.getElementById("pointLightPositionY").value = coord[1];
+            document.getElementById("pointLightPositionZ").value = coord[2];
+
+            document.getElementById("pointLightPositionXOutput").innerHTML = "x: " + coord[0];
+            document.getElementById("pointLightPositionYOutput").innerHTML = "y: " + coord[1];
+            document.getElementById("pointLightPositionZOutput").innerHTML = "z: " + coord[2];
+        }
+
         this.position = [
             parseFloat(document.getElementById("pointLightPositionX").value),
             parseFloat(document.getElementById("pointLightPositionY").value),

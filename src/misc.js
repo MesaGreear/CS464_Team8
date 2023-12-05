@@ -308,7 +308,7 @@ function startHelloWebGL() {
     initTextures();
 
     // initialize a single pipe in the scene
-    pipes.push(new Pipe(coloredTexs[0]));
+    pipes.push(new Pipe(coloredTexs[0], [[0, 90], [-50, 0], [-90, 0]], [5, 25]));
 
     // set background of canvas to black
     gl.clearColor(0, 0, 0, 1.0);

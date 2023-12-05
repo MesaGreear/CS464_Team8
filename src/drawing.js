@@ -5,7 +5,7 @@ var stack;
 
 var draws;
 var binds;
-var vertices;
+var vertexCount;
 
 /**
  * Generates an orthographic projection matrix with bounds set appropriately
@@ -79,7 +79,11 @@ function drawScene() {
     // ========================================================================================================
 
     // reset stats
-    draws = binds = vertices = 0;
+    draws = binds = vertexCount = 0;
+
+    // copy the current shapes array, prevents weird stuff from happening mid-
+    // -frame if the geometry changes
+    var currShapes = shapes.slice();
 
     // Our update handler, push a new shape/coordinate to each pipe every x number of frames
     if (totalF % Math.floor(5.0 / (speed / 100.0)) == 0)
@@ -137,7 +141,7 @@ function drawScene() {
                 stack.scale(1.65);
             }
 
-            draw(segment.shape, pipe.tex, pMatrix);
+            draw(currShapes[segment.shape], pipe.tex, pMatrix);
             stack.pop();
         }
     });
@@ -151,7 +155,7 @@ function drawScene() {
         stack.push();
         stack.rotateY(-spotLight.yaw);
         stack.rotateX(spotLight.pitch);
-        draw(1, glTextures[5], pMatrix, false);
+        draw(currShapes[4], glTextures[5], pMatrix, false);
         stack.pop();
 
         stack.push();
@@ -159,7 +163,7 @@ function drawScene() {
         stack.rotateY(-spotLight.yaw);
         stack.rotateX(spotLight.pitch);
         stack.scale([0.5, 0.5, 1.5]);
-        draw(2, glTextures[6], pMatrix, false);
+        draw(currShapes[5], glTextures[6], pMatrix, false);
         stack.pop();
 
         stack.push();
@@ -167,7 +171,7 @@ function drawScene() {
         stack.rotateY(-spotLight.yaw);
         stack.rotateX(spotLight.pitch);
         stack.scale(0.6);
-        draw(3, glTextures[6], pMatrix, false);
+        draw(currShapes[3], glTextures[6], pMatrix, false);
         stack.pop();
         stack.pop();
     }
@@ -175,37 +179,35 @@ function drawScene() {
     if (pointLight.drawEnabled) {
         stack.push();
         stack.translate(pointLight.position);
-        draw(3, glTextures[6], pMatrix, false);
+        draw(currShapes[3], glTextures[6], pMatrix, false);
         stack.pop();
     }
 }
 
-var oldIndex;
+var oldShape;
 var oldTexture;
 
 /**
  * Draw the object contained at the given index in the buffers and apply the
  * given texture to it. Uses the top of the matrix stack as it's model matrix.
  *
- * @param {int}           index   An index corelating to a shape in the shapes array
+ * @param {Shape}         shape   A Shape in the shapes array
  * @param {GL_TEXTURE_2D} texture Image texture to apply to this drawn object
- * @param {int}           pMatrix The perspective matrix
+ * @param {mat4}          pMatrix The perspective matrix
  * @param {boolean}   useLighting If false, draws object with texture color only
  */
-function draw(index, texture, pMatrix, useLighting = true) {
+function draw(shape, texture, pMatrix, useLighting = true) {
     draws++;
 
     var mvMatrix = mat4.identity(mat4.create());
     mat4.multiply(mvMatrix, stack.getMatrix(), mvMatrix);
 
-    var shape = shapes[index];
-
-    vertices += shape.vBuffer.numItems;
+    vertexCount += shape.vBuffer.numItems;
 
     setMatrixUniforms(pMatrix, mvMatrix);
 
     // only 'rebind' buffers if the shape/texture being drawn is different from the previous frame
-    if (oldIndex != index || texture != oldTexture) {
+    if (oldShape != shape || texture != oldTexture) {
         binds++;
 
         gl.bindBuffer(gl.ARRAY_BUFFER, shape.vBuffer);
@@ -226,7 +228,7 @@ function draw(index, texture, pMatrix, useLighting = true) {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, shape.iBuffer);
     }
 
-    oldIndex = index;
+    oldShape = shape;
     oldTexture = texture;
     gl.drawElements(lineMode ? gl.LINES : gl.TRIANGLES,shape.iBuffer.numItems,gl.UNSIGNED_SHORT,0);
 }

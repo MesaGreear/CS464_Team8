@@ -315,6 +315,41 @@ function loadUserInteraction() {
         while (pipes.length > pipeAmount) pipes.pop();
     };
 
+    // Sphere Quality Slider
+    var slider7 = document.getElementById("sphereQ");
+    var output7 = document.getElementById("sphereQOutput");
+    output7.innerHTML = slider7.value;
+    SPHERE_QUALITY = Number(slider7.value);
+    slider7.oninput = function () { output7.innerHTML = this.value; SPHERE_QUALITY = Number(this.value); initGeometry(); };
+
+    // Sphere Radius Slider
+    var slider8 = document.getElementById("sphereR");
+    var output8 = document.getElementById("sphereROutput");
+    output8.innerHTML = slider8.value;
+    SPHERE_RADIUS = Number(slider8.value);
+    slider8.oninput = function () { output8.innerHTML = this.value; SPHERE_RADIUS = Number(slider8.value); initGeometry(); };
+    
+    // Sphere Radius Slider
+    var slider11 = document.getElementById("sphereS");
+    var output11 = document.getElementById("sphereSOutput");
+    output11.innerHTML = slider11.value;
+    SPHERE_SPIKE = Number(slider11.value);
+    slider11.oninput = function () { output11.innerHTML = this.value; SPHERE_SPIKE = Number(slider11.value); initGeometry(); };
+    
+    // Cylinder Quality Slider
+    var slider9 = document.getElementById("cylinderQ");
+    var output9 = document.getElementById("cylinderQOutput");
+    output9.innerHTML = slider9.value;
+    CYLINDER_QUALITY = Number(slider9.value);
+    slider9.oninput = function () { output9.innerHTML = this.value; CYLINDER_QUALITY = Number(this.value); initGeometry(); };
+
+    // Cylinder Radius Slider
+    var slider10 = document.getElementById("cylinderR");
+    var output10 = document.getElementById("cylinderROutput");
+    output10.innerHTML = slider10.value;
+    CYLINDER_RADIUS = Number(slider10.value);
+    slider10.oninput = function () { output10.innerHTML = this.value; CYLINDER_RADIUS = Number(slider10.value); initGeometry(); };
+
     // hide/reveal details when clicked
     document.getElementById("details").onclick = function () {
         if (document.getElementById("deets").style.visibility == "hidden") {
@@ -382,7 +417,7 @@ function updateDetails() {
     // display the number of draw calls, how many times the buffers were rebinded, and the total number of vertices in the scene
     document.getElementById(
         "deets2"
-    ).innerHTML = `Draw() Calls: ${draws} <br> Vertex Count: ${vertices} <br> FPS: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ${Math.floor(
+    ).innerHTML = `Draw() Calls: ${draws} <br> Vertex Count: ${vertexCount} <br> FPS: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ${Math.floor(
         fps
     )}`;
 }

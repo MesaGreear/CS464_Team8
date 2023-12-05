@@ -344,6 +344,13 @@ function loadUserInteraction() {
     slider9.oninput = function () { output9.innerHTML = this.value; CYLINDER_QUALITY = Number(this.value); initGeometry(); };
 
     // Cylinder Radius Slider
+    var slider12 = document.getElementById("cylinderS");
+    var output12 = document.getElementById("cylinderSOutput");
+    output12.innerHTML = slider12.value;
+    CYLINDER_SEGMENT = Number(slider12.value);
+    slider12.oninput = function () { output12.innerHTML = this.value; CYLINDER_SEGMENT = Number(slider12.value); initGeometry(); };
+
+    // Cylinder Radius Slider
     var slider10 = document.getElementById("cylinderR");
     var output10 = document.getElementById("cylinderROutput");
     output10.innerHTML = slider10.value;

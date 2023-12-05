@@ -257,11 +257,12 @@ function initSphere(quality, radius, bump) {
 /**
  * Generate a cylinder push its geometry data to vertices, textures, & indices.
  * 
- * @param {Int}   quality The quality/smoothness of the cylinder
- * @param {Float} radius  The radius of the cylinder
- * @param {Float} height  The height of the cylinder
+ * @param {Int}   quality  The quality/smoothness of the cylinder
+ * @param {Int}   segments How many segments the cylinder will be split into - 1
+ * @param {Float} radius   The radius of the cylinder
+ * @param {Float} height   The height of the cylinder
  */
-function initCylinder(quality, radius, height) {
+function initCylinder(quality, segments, radius, height) {
     // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
 
     var sectorStep = (2 * Math.PI) / quality;
@@ -275,9 +276,9 @@ function initCylinder(quality, radius, height) {
     }
 
     // vertices & textures
-    for (i = 0; i < 2; i++) {
-        var h = -height / 2.0 + i * height;
-        var t = 1.0 - i;
+    for (i = 0; i < segments; i++) {
+        var h = -height / 2.0 + (i * height)/(segments - 1);
+        var t = 1.0 - (i/segments);
 
         for (j = 0, k = 0; j <= quality; j++, k += 3) {
             var ux = unitVertices[k];
@@ -297,11 +298,13 @@ function initCylinder(quality, radius, height) {
     }
 
     // indices
-    var k1 = 0;
-    var k2 = quality + 1;
-    for (i = 0; i < quality; i++, k1++, k2++) {
-        indices.push(k1, k1 + 1, k2);
-        indices.push(k2, k1 + 1, k2 + 1);
+    for(z = 0; z < (segments - 1); z++) {
+        var k1 = z * (quality + 1);
+        var k2 = (z + 1) * (quality + 1);
+        for (i = 0; i < quality; i++, k1++, k2++) {
+            indices.push(k1, k1 + 1, k2);
+            indices.push(k2, k1 + 1, k2 + 1);
+        }
     }
 }
 
@@ -319,6 +322,7 @@ var SPHERE_RADIUS;
 var SPHERE_SPIKE;
 
 var CYLINDER_QUALITY;
+var CYLINDER_SEGMENT;
 var CYLINDER_RADIUS;
 
 
@@ -343,7 +347,7 @@ function initGeometry() {
     clearArrs();
 
     // initialize a cylinder (that can change via user input) and insert it into shapes at index 2
-    initCylinder(CYLINDER_QUALITY, CYLINDER_RADIUS, 1.0);
+    initCylinder(CYLINDER_QUALITY, CYLINDER_SEGMENT, CYLINDER_RADIUS, 1.0);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
     clearArrs();
@@ -361,7 +365,7 @@ function initGeometry() {
     clearArrs();
 
     // initialize a cylinder and insert it into shapes at index 5
-    initCylinder(15, 1.0, 1.0);
+    initCylinder(15, 2.0, 1.0, 1.0);
     shapes.push(new Shape(vertices, normals, textures, indices));
 
     clearArrs();

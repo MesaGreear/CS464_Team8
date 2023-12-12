@@ -210,7 +210,6 @@ function initSquare() {
  * @param {Float} bump    The 'bumpiness'/'spikiness' of this sphere
  */
 function initSphere(quality, radius, bump) {
-    // Lotsa help from here (https://stackoverflow.com/questions/47756053/webgl-try-draw-sphere)
     var i, ai, si, ci;
     var j, aj, sj, cj;
     var p1, p2;
@@ -263,8 +262,6 @@ function initSphere(quality, radius, bump) {
  * @param {Float} height   The height of the cylinder
  */
 function initCylinder(quality, segments, radius, height) {
-    // Lotsa help from here: https://www.songho.ca/opengl/gl_cylinder.html#cylinder
-
     var sectorStep = (2 * Math.PI) / quality;
     var unitVertices = [];
 

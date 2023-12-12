@@ -37,6 +37,11 @@ function generateOrthographicProjectionMatrix() {
  */
 function drawScene() {
     var canvas = document.getElementById("hellowebgl");
+    var body = document.getElementById("main");
+
+    //Resize canvas based on page dimensions, then clamp to viewable area
+    canvas.width = body.clientWidth;
+    canvas.height = body.clientHeight;
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
     gl.viewportWidth = canvas.width;

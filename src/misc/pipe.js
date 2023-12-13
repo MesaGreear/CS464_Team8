@@ -120,7 +120,7 @@ class Pipe {
      * Set the length of the next/new section to a random value within certain bounds.
      */
     genNewSectionLength() {
-        this.length = randInt(5, 20);
+        this.length = randInt(this.minmax[0], this.minmax[1]);
     }
 
     /**

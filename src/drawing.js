@@ -113,20 +113,13 @@ function drawScene() {
                 // cylinder, avoiding draw() calls for each segment
                 var sectionLength = 1;
                 i++;
-                for (
-                    ;
-                    i < pipe.queue.length && pipe.queue[i].shape == 2;
-                    i++, sectionLength++
-                );
+                for (; i < pipe.queue.length && pipe.queue[i].shape == 2; i++, sectionLength++);
                 i--;
 
                 // move the stretched cylinder between the first and last coordinates in this section
                 stack.translate(
                     combineVec3(
-                        divideVec3(
-                            subtractVec3(pipe.queue[i].coord, segment.coord),
-                            2.0
-                        ),
+                        divideVec3(subtractVec3(pipe.queue[i].coord, segment.coord), 2.0),
                         segment.coord
                     )
                 );
